@@ -1,0 +1,23 @@
+---
+title: 'Autenticação'
+description: 'Como se autenticar para utilizar a api'
+icon: 'lock'
+---
+
+<Tip>
+  **💡 Importante**: Para acessar nossa API, você precisará de uma chave de API.
+Ela é o identificador da sua conta e garante que suas requisições sejam autorizadas com segurança.
+</Tip>
+
+## <Icon icon="lock" type="solid"/>  Autenticar com token de acesso
+A autenticação dos endpoints é feita através de um token de acesso gerado pela
+rota de autenticação da api que atua com basic auth.
+
+<Card title="Tokens de acesso podem ser gerados para sandbox e produção." icon="book" horizontal>
+  As credencias de autenticação basic auth são geradas pelo nosso time de desenvolvimento e segurança.
+  Solicite-as pelo nosso suporte.
+</Card>
+
+Caso o token de acesso da sua requisição para nosso endpoint de autenticação basic auth não seja informada no header, esteja inválida ou revogada, nossa API retornará o código HTTP `401`.
+
+<a href="./api-reference/auth/auth"> Autenticar clientId e clientSecret </a>
