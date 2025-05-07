@@ -566,7 +566,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/entities.TransactionPix"
+                                    "$ref": "#/components/schemas/dto.GetTransactionPixDto"
                                 }
                             }
                         }
@@ -912,6 +912,35 @@
                     }
                 }
             },
+            "dto.GetTransactionPixDto": {
+                "type": "object",
+                "properties": {
+                    "copyPaste": {
+                        "description": "Código Pix no formato 'copia e cola'\nexample: \"00020126360014BR.GOV.BCB.PIX0114+5511999999995204000053039865405123.455802BR5913Nome do Cliente6010SAO PAULO62070503***6304ABCD\"",
+                        "type": "string"
+                    },
+                    "expiration": {
+                        "description": "Tempo de expiração do QR Code em segundos (padrão: 86400 = 24h)\nexample: 86400",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "description": "ID interno da transação no sistema\nexample: 1",
+                        "type": "integer"
+                    },
+                    "key": {
+                        "description": "Chave Pix utilizada na transação (CPF, CNPJ, e-mail, telefone ou chave aleatória)\nexample: \"123e4567-e89b-12d3-a456-426614174000\"",
+                        "type": "string"
+                    },
+                    "qrCode": {
+                        "description": "QR Code gerado para o pagamento via Pix\nexample: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...\"",
+                        "type": "string"
+                    },
+                    "transactionId": {
+                        "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
+                        "type": "integer"
+                    }
+                }
+            },
             "dto.IResponseInstallmentOption": {
                 "type": "object",
                 "properties": {
@@ -1195,29 +1224,6 @@
                     },
                     "updatedAt": {
                         "type": "string"
-                    }
-                }
-            },
-            "entities.TransactionPix": {
-                "type": "object",
-                "properties": {
-                    "copyPaste": {
-                        "type": "string"
-                    },
-                    "expiration": {
-                        "type": "integer"
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "key": {
-                        "type": "string"
-                    },
-                    "qrCode": {
-                        "type": "string"
-                    },
-                    "transactionId": {
-                        "type": "integer"
                     }
                 }
             },

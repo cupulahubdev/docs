@@ -23,7 +23,8 @@
           {
             "group": "Checkout endpoints",
             "pages": [
-              "checkout/pix"
+              "checkout/pix",
+              "checkout/get-transaction-pix"
             ]
           }
         ]
