@@ -1,23 +1,87 @@
 ---
-title: 'Autenticação'
+title: '🔐 Autenticação da API'
 description: 'Como se autenticar para utilizar a api'
-icon: 'lock'
 ---
 
-<Tip>
-  **💡 Importante**: Para acessar nossa API, você precisará de uma chave de API.
-Ela é o identificador da sua conta e garante que suas requisições sejam autorizadas com segurança.
-</Tip>
+---
 
-## <Icon icon="lock" type="solid"/>  Autenticar com token de acesso
-A autenticação dos endpoints é feita através de um token de acesso gerado pela
-rota de autenticação da api que atua com basic auth.
+## ✅ Etapa 1 – Obtenha suas credenciais
 
-<Card title="Tokens de acesso podem ser gerados para sandbox e produção." icon="book" horizontal>
-  As credencias de autenticação basic auth são geradas pelo nosso time de desenvolvimento e segurança.
-  Solicite-as pelo nosso suporte.
-</Card>
+Para iniciar a autenticação, você precisa ter em mãos seu `clientId` e `clientSecret`.  
+Essas credenciais são fornecidas pela equipe da **Cúpula** e identificam sua aplicação.
 
-Caso o token de acesso da sua requisição para nosso endpoint de autenticação basic auth não seja informada no header, esteja inválida ou revogada, nossa API retornará o código HTTP `401`.
+> ⚠️ Essas informações são sensíveis. Armazene com segurança e **nunca compartilhe publicamente**.
 
-<a href="./api-reference/auth/auth"> Autenticar clientId e clientSecret </a>
+---
+
+## 🚀 Etapa 2 – Solicite o token de acesso
+
+Com as credenciais em mãos, envie uma requisição `POST` para o endpoint de autenticação:
+
+```http
+POST https://payments.service-dev.cupulahub.app/auth/v1/token
+```
+
+### Corpo da requisição (JSON):
+
+```json
+{
+  "clientId": "SEU_CLIENT_ID",
+  "clientSecret": "SEU_CLIENT_SECRET"
+}
+```
+
+### Header necessário:
+
+```http
+Content-Type: application/json
+```
+
+---
+
+## 📅 Etapa 3 – Receba o token no formato base64
+
+Se as credenciais forem válidas, a resposta será semelhante a:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=="
+}
+```
+
+Esse token será usado para autenticar todas as requisições futuras à API.
+
+---
+
+## 📡 Etapa 4 – Envie o token nas requisições autenticadas
+
+Inclua o token no cabeçalho `Authorization` em todas as chamadas à API:
+
+```http
+Authorization: Bearer SEU_TOKEN
+```
+
+> Substitua `SEU_TOKEN` pelo valor retornado na etapa anterior.
+
+### Exemplo de requisição usando cURL:
+
+```bash
+curl --request GET \
+  --url https://payments.service-dev.cupulahub.app/exemplo-de-endpoint \
+  --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=="
+```
+
+---
+
+## ❌ Etapa 5 – Trate erros comuns de autenticação
+
+A API pode retornar os seguintes erros relacionados à autenticação:
+
+- `400 Bad Request`: parâmetros ausentes ou inválidos.
+- `401 Unauthorized`: token ausente, malformado, inválido ou expirado.
+
+> 🔁 Certifique-se de renovar o token quando ele expirar e valide se ele está sendo enviado corretamente no cabeçalho da requisição.
+
+---
+
+Pronto! Sua aplicação já pode consumir os recursos da API de forma segura e autenticada.

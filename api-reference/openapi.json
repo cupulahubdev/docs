@@ -1,1158 +1,1246 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-      "description": "API para processamento de pagamentos integrada com a Celcoin e gestão de pedidos de checkout.",
-      "title": "API de Pagamentos - Cupulahub",
-      "contact": {},
-      "version": "1.0"
-  },
-  "paths": {
-      "/auth/v1/create/credentials": {
-          "post": {
-              "description": "Gera clientId, clientSecret criptografado e token de autenticação base64.",
-              "tags": [
-                  "Auth"
-              ],
-              "summary": "Criar clientId e clientSecret criptografados",
-              "responses": {
-                  "201": {
-                      "description": "Retorna clientId, clientSecret criptografado e token base64",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "object",
-                                  "additionalProperties": {
-                                      "type": "string"
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "500": {
-                      "description": "Erro interno ao gerar credenciais",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/auth/v1/token": {
-          "post": {
-              "description": "Recebe clientId e clientSecret e retorna um token de autenticação base64 para ser utilizado nos headers de autorização.",
-              "tags": [
-                  "Auth"
-              ],
-              "summary": "Autenticar clientId e clientSecret",
-              "requestBody": {
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "$ref": "#/components/schemas/dto.AuthDto"
-                          }
-                      }
-                  },
-                  "description": "Credenciais do checkout: clientId e clientSecret",
-                  "required": true
-              },
-              "responses": {
-                  "200": {
-                      "description": "Token base64 de autenticação",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/dto.AuthResponse"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Requisição inválida - JSON mal formatado ou campos ausentes",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  },
-                  "401": {
-                      "description": "Credenciais inválidas",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/checkout/v1/boleto": {
-          "post": {
-              "security": [
-                  {
-                      "BearerAuth": []
-                  }
-              ],
-              "description": "Este endpoint permite a criação de um novo pagamento via Boleto.",
-              "tags": [
-                  "Checkout"
-              ],
-              "summary": "Criar um novo pagamento via Boleto",
-              "requestBody": {
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "$ref": "#/components/schemas/dto.CreateBoletoDTO"
-                          }
-                      }
-                  },
-                  "description": "Dados do pagamento, incluindo informações do cliente e do valor",
-                  "required": true
-              },
-              "responses": {
-                  "201": {
-                      "description": "Retorna os detalhes do boleto criado",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/dto.ResponseBoletetoDTO"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Requisição inválida - Corpo da requisição inválido.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  },
-                  "401": {
-                      "description": "Não autorizado - Token ausente ou inválido.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/checkout/v1/creditCard": {
-          "post": {
-              "security": [
-                  {
-                      "BearerAuth": []
-                  }
-              ],
-              "description": "Este endpoint permite a criação de um novo pagamento com cartão de crédito.",
-              "tags": [
-                  "Checkout"
-              ],
-              "summary": "Criar um novo pagamento com cartão de crédito",
-              "requestBody": {
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "$ref": "#/components/schemas/dto.CreateCreditCardPaymentDTO"
-                          }
-                      }
-                  },
-                  "description": "Dados do pagamento, incluindo informações do cliente e do valor",
-                  "required": true
-              },
-              "responses": {
-                  "201": {
-                      "description": "Retorna os detalhes do pagamento com cartão de crédito criado",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/dto.ResponseBoletetoDTO"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Requisição inválida - Corpo da requisição inválido.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  },
-                  "401": {
-                      "description": "Não autorizado - Token ausente ou inválido.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/checkout/v1/installments": {
-          "get": {
-              "security": [
-                  {
-                      "BearerAuth": []
-                  }
-              ],
-              "description": "Retorna os planos de parcelamento com base nas credenciais da loja e no valor da transação em centavos.",
-              "tags": [
-                  "Parcelamentos"
-              ],
-              "summary": "Obter opções de parcelamento",
-              "parameters": [
-                  {
-                      "description": "Token de credencial da loja",
-                      "name": "storeCredentialToken",
-                      "in": "query",
-                      "required": true,
-                      "schema": {
-                          "type": "string"
-                      }
-                  },
-                  {
-                      "description": "Valor da transação em centavos",
-                      "name": "amount",
-                      "in": "query",
-                      "required": true,
-                      "schema": {
-                          "type": "integer"
-                      }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "OK",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "array",
-                                  "items": {
-                                      "$ref": "#/components/schemas/dto.IResponseInstallmentOption"
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Parâmetros da requisição inválidos",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "object",
-                                  "additionalProperties": {
-                                      "type": "string"
-                                  }
-                              }
-                          }
-                      }
-                  },
-                  "500": {
-                      "description": "Erro interno do servidor",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "type": "object",
-                                  "additionalProperties": {
-                                      "type": "string"
-                                  }
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/checkout/v1/pix": {
-          "post": {
-              "security": [
-                  {
-                      "BearerAuth": []
-                  }
-              ],
-              "description": "Este endpoint permite a criação de um novo pagamento via PIX.",
-              "tags": [
-                  "Checkout"
-              ],
-              "summary": "Criar um novo pagamento via PIX",
-              "requestBody": {
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "$ref": "#/components/schemas/dto.CreatePixDTO"
-                          }
-                      }
-                  },
-                  "description": "Dados do pagamento, incluindo informações do cliente e do valor",
-                  "required": true
-              },
-              "responses": {
-                  "201": {
-                      "description": "Retorna os detalhes do pagamento PIX criado",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/dto.ResponsePixDTO"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Requisição inválida - Corpo da requisição inválido.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  },
-                  "401": {
-                      "description": "Não autorizado - Token ausente ou inválido.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/order/v1/create": {
-          "post": {
-              "description": "This endpoint allows the creation of a new order.",
-              "tags": [
-                  "Order"
-              ],
-              "summary": "Create a new order",
-              "requestBody": {
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "$ref": "#/components/schemas/dto.CreateOrderDTO"
-                          }
-                      }
-                  },
-                  "description": "order data including customer details, shipping fee, and order items",
-                  "required": true
-              },
-              "responses": {
-                  "201": {
-                      "description": "Returns the created order details",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/dto.ResponseOrderDTO"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Bad Request - Invalid request body.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/order/v1/{orderHash}": {
-          "get": {
-              "description": "This endpoint retrieves an order based on the provided OrderHash.",
-              "tags": [
-                  "Order"
-              ],
-              "summary": "Get an order by OrderHash",
-              "parameters": [
-                  {
-                      "description": "OrderHash of the order to retrieve",
-                      "name": "orderHash",
-                      "in": "path",
-                      "required": true,
-                      "schema": {
-                          "type": "string"
-                      }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Returns the order details",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/dto.ITransactionOrderResponse"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Bad Request - Invalid order OrderHash.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  },
-                  "500": {
-                      "description": "Internal Server Error - Failed to retrieve order.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/payments/v1/": {
-          "post": {
-              "description": "This endpoint allows the creation of a new payment.",
-              "tags": [
-                  "Payments"
-              ],
-              "summary": "Create a new payment",
-              "requestBody": {
-                  "content": {
-                      "application/json": {
-                          "schema": {
-                              "$ref": "#/components/schemas/dto.CreatePaymentDTO"
-                          }
-                      }
-                  },
-                  "description": "payment data including payment details and order information",
-                  "required": true
-              },
-              "responses": {
-                  "201": {
-                      "description": "Returns the created payment details",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/dto.CreatePaymentResponseDTO"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Bad Request - Invalid request body.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  },
-                  "500": {
-                      "description": "Internal Server Error - Failed to create payment request.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      },
-      "/payments/v1/status/{transactionId}": {
-          "get": {
-              "description": "This endpoint allows to get payment status by transactionId.",
-              "tags": [
-                  "Payments"
-              ],
-              "summary": "Get payment status",
-              "parameters": [
-                  {
-                      "description": "transactionId",
-                      "name": "transactionId",
-                      "in": "path",
-                      "required": true,
-                      "schema": {
-                          "type": "string"
-                      }
-                  }
-              ],
-              "responses": {
-                  "200": {
-                      "description": "Returns the payment status",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/dto.PaymentStatusDTO"
-                              }
-                          }
-                      }
-                  },
-                  "400": {
-                      "description": "Bad Request - Invalid request body.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  },
-                  "500": {
-                      "description": "Internal Server Error - Failed to get payment status request.",
-                      "content": {
-                          "application/json": {
-                              "schema": {
-                                  "$ref": "#/components/schemas/http_response.ErrorResponse"
-                              }
-                          }
-                      }
-                  }
-              }
-          }
-      }
-  },
-  "servers": [
-      {
-          "url": "http://payments.service-dev.cupulahub.app"
-      },
-      {
-          "url": "https://payments.service-dev.cupulahub.app"
-      }
-  ],
-  "components": {
-      "securitySchemes": {
-          "BearerAuth": {
-              "type": "apiKey",
-              "name": "Authorization",
-              "in": "header"
-          }
-      },
-      "schemas": {
-          "dto.AuthDto": {
-              "type": "object",
-              "properties": {
-                  "clientId": {
-                      "description": "Identificador do cliente fornecido pela plataforma",
-                      "type": "string",
-                      "example": "2529699435881029074092451"
-                  },
-                  "clientSecret": {
-                      "description": "Chave secreta associada ao clientId, usada para autenticação",
-                      "type": "string",
-                      "example": "FkUXoAXkCYLXZwQtKOmsCQmgxHEIOTme"
-                  }
-              }
-          },
-          "dto.AuthResponse": {
-              "type": "object",
-              "properties": {
-                  "token": {
-                      "description": "Token codificado em base64, utilizado para autenticação em chamadas subsequentes à API.\nDeve ser incluído no cabeçalho Authorization como: Bearer {token}",
-                      "type": "string",
-                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=="
-                  }
-              }
-          },
-          "dto.CreateBoletoDTO": {
-              "type": "object",
-              "properties": {
-                  "billingAddress": {
-                      "description": "Endereço de cobrança associado ao cliente",
-                      "allOf": [
-                          {
-                              "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
-                          }
-                      ]
-                  },
-                  "customer": {
-                      "description": "Informações do cliente que realizará o pagamento",
-                      "allOf": [
-                          {
-                              "$ref": "#/components/schemas/dto.Customer"
-                          }
-                      ]
-                  },
-                  "orderItems": {
-                      "description": "Lista de itens relacionados ao pedido (opcional)",
-                      "type": "array",
-                      "items": {
-                          "$ref": "#/components/schemas/dto.OrderItemDTO"
-                      }
-                  },
-                  "payDate": {
-                      "description": "Data do vencimento do boleto no formato YYYY-MM-DD",
-                      "type": "string",
-                      "example": "2025-03-02"
-                  },
-                  "storeCredentialToken": {
-                      "description": "Token de credencial da loja utilizado para autenticação da requisição",
-                      "type": "string"
-                  },
-                  "value": {
-                      "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
-                      "type": "integer",
-                      "example": 25000
-                  }
-              }
-          },
-          "dto.CreateCreditCardPaymentDTO": {
-              "type": "object",
-              "properties": {
-                  "billingAddress": {
-                      "description": "Endereço de cobrança do cliente",
-                      "allOf": [
-                          {
-                              "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
-                          }
-                      ]
-                  },
-                  "cardHash": {
-                      "description": "Hash do cartão de crédito (criptografado no frontend)",
-                      "type": "string"
-                  },
-                  "customer": {
-                      "description": "Informações do cliente responsável pelo pagamento",
-                      "allOf": [
-                          {
-                              "$ref": "#/components/schemas/dto.Customer"
-                          }
-                      ]
-                  },
-                  "orderItems": {
-                      "description": "Lista de itens incluídos no pedido",
-                      "type": "array",
-                      "items": {
-                          "$ref": "#/components/schemas/dto.OrderItemDTO"
-                      }
-                  },
-                  "payDate": {
-                      "description": "Data do pagamento no formato YYYY-MM-DD",
-                      "type": "string",
-                      "example": "2025-03-02"
-                  },
-                  "qtdInstallments": {
-                      "description": "Quantidade de parcelas para o pagamento",
-                      "type": "integer",
-                      "example": 1
-                  },
-                  "storeCredentialToken": {
-                      "description": "Token de credencial da loja fornecido para autenticação",
-                      "type": "string"
-                  },
-                  "value": {
-                      "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
-                      "type": "integer",
-                      "example": 25000
-                  }
-              }
-          },
-          "dto.CreateCustomerAddressDTO": {
-              "type": "object",
-              "properties": {
-                  "city": {
-                      "type": "string",
-                      "example": "São Paulo"
-                  },
-                  "complement": {
-                      "type": "string",
-                      "example": "Casa 2"
-                  },
-                  "country": {
-                      "type": "string",
-                      "example": "Brasil"
-                  },
-                  "district": {
-                      "type": "string",
-                      "example": "Jardins"
-                  },
-                  "number": {
-                      "type": "string",
-                      "example": "456"
-                  },
-                  "state": {
-                      "type": "string",
-                      "example": "SP"
-                  },
-                  "street": {
-                      "type": "string",
-                      "example": "Rua Oscar Freire"
-                  },
-                  "zipCode": {
-                      "type": "string",
-                      "example": "69200970"
-                  }
-              }
-          },
-          "dto.CreateOrderDTO": {
-              "type": "object",
-              "properties": {
-                  "externalId": {
-                      "type": "string"
-                  },
-                  "orderItems": {
-                      "type": "array",
-                      "items": {
-                          "$ref": "#/components/schemas/dto.OrderItemDTO"
-                      }
-                  },
-                  "paymentMethods": {
-                      "$ref": "#/components/schemas/dto.PaymentMethods"
-                  },
-                  "shippingFee": {
-                      "type": "integer"
-                  },
-                  "storeCredentialToken": {
-                      "type": "string"
-                  }
-              }
-          },
-          "dto.CreatePaymentDTO": {
-              "type": "object",
-              "properties": {
-                  "billingAddress": {
-                      "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
-                  },
-                  "creditCardHash": {
-                      "type": "string"
-                  },
-                  "customer": {
-                      "$ref": "#/components/schemas/dto.Customer"
-                  },
-                  "installment": {
-                      "type": "integer"
-                  },
-                  "orderHash": {
-                      "type": "string"
-                  },
-                  "paymentMethod": {
-                      "type": "string"
-                  }
-              }
-          },
-          "dto.CreatePaymentResponseDTO": {
-              "type": "object",
-              "properties": {
-                  "boleto": {
-                      "$ref": "#/components/schemas/dto.ResponseBoletetoDTO"
-                  },
-                  "creditCard": {
-                      "$ref": "#/components/schemas/dto.ResponseCreditCardDTO"
-                  },
-                  "paymentMethod": {
-                      "type": "string"
-                  },
-                  "pix": {
-                      "$ref": "#/components/schemas/dto.ResponsePixDTO"
-                  }
-              }
-          },
-          "dto.CreatePixDTO": {
-              "type": "object",
-              "properties": {
-                  "billingAddress": {
-                      "description": "Endereço de cobrança associado ao cliente",
-                      "allOf": [
-                          {
-                              "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
-                          }
-                      ]
-                  },
-                  "customer": {
-                      "description": "Informações do cliente que realizará o pagamento",
-                      "allOf": [
-                          {
-                              "$ref": "#/components/schemas/dto.Customer"
-                          }
-                      ]
-                  },
-                  "orderItems": {
-                      "description": "Lista de itens relacionados ao pedido (opcional)",
-                      "type": "array",
-                      "items": {
-                          "$ref": "#/components/schemas/dto.OrderItemDTO"
-                      }
-                  },
-                  "payDate": {
-                      "description": "Data de vencimento do pagamento via PIX no formato YYYY-MM-DD",
-                      "type": "string",
-                      "example": "2025-03-02"
-                  },
-                  "storeCredentialToken": {
-                      "description": "Token de credencial da loja utilizado para autenticação da requisição",
-                      "type": "string"
-                  },
-                  "value": {
-                      "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
-                      "type": "integer",
-                      "example": 25000
-                  }
-              }
-          },
-          "dto.CreditCardMethod": {
-              "type": "object",
-              "properties": {
-                  "active": {
-                      "type": "boolean"
-                  },
-                  "maxInstallments": {
-                      "type": "integer"
-                  }
-              }
-          },
-          "dto.Customer": {
-              "type": "object",
-              "properties": {
-                  "document": {
-                      "type": "string",
-                      "example": "11591923085"
-                  },
-                  "emails": {
-                      "type": "string",
-                      "example": "jhondoe@gmail.com"
-                  },
-                  "name": {
-                      "type": "string",
-                      "example": "Jhon doe"
-                  },
-                  "phone": {
-                      "type": "string",
-                      "example": "+5594984097456"
-                  }
-              }
-          },
-          "dto.IResponseInstallmentOption": {
-              "type": "object",
-              "properties": {
-                  "fee": {
-                      "description": "Porcentagem da taxa de juros aplicada sobre o parcelamento",
-                      "type": "number",
-                      "example": 0.49
-                  },
-                  "installment": {
-                      "description": "Número da parcela (ex: 1 para pagamento à vista, 2 para duas parcelas, etc.)",
-                      "type": "integer",
-                      "example": 3
-                  },
-                  "installmentValue": {
-                      "description": "Valor de cada parcela em centavos (ex: 3334 representa R$ 33,34)",
-                      "type": "integer",
-                      "example": 3334
-                  },
-                  "total_amount": {
-                      "description": "Valor total do pagamento em centavos incluindo juros (ex: 10002 representa R$ 100,02)",
-                      "type": "integer",
-                      "example": 10002
-                  }
-              }
-          },
-          "dto.ITransactionOrderResponse": {
-              "type": "object",
-              "properties": {
-                  "createdAt": {
-                      "type": "string"
-                  },
-                  "externalID": {
-                      "type": "string"
-                  },
-                  "id": {
-                      "type": "integer"
-                  },
-                  "installments": {
-                      "type": "array",
-                      "items": {
-                          "$ref": "#/components/schemas/dto.IResponseInstallmentOption"
-                      }
-                  },
-                  "maxInstallments": {
-                      "type": "integer"
-                  },
-                  "orderHash": {
-                      "type": "string"
-                  },
-                  "orderItems": {
-                      "type": "array",
-                      "items": {
-                          "$ref": "#/components/schemas/entities.OrderItem"
-                      }
-                  },
-                  "paymentMethods": {
-                      "type": "string"
-                  },
-                  "shippingFee": {
-                      "type": "integer"
-                  },
-                  "storeID": {
-                      "type": "integer"
-                  },
-                  "subtotal": {
-                      "type": "integer"
-                  },
-                  "totalAmount": {
-                      "type": "integer"
-                  },
-                  "transactionId": {
-                      "type": "integer"
-                  },
-                  "updatedAt": {
-                      "type": "string"
-                  }
-              }
-          },
-          "dto.OrderItemDTO": {
-              "type": "object",
-              "properties": {
-                  "productImageUrl": {
-                      "type": "string",
-                      "example": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  },
-                  "productPrice": {
-                      "type": "integer",
-                      "example": 25000
-                  },
-                  "productQuantity": {
-                      "type": "integer",
-                      "example": 1
-                  },
-                  "productTitle": {
-                      "type": "string",
-                      "example": "Tênis Nike"
-                  }
-              }
-          },
-          "dto.PaymentMethods": {
-              "type": "object",
-              "properties": {
-                  "boleto": {
-                      "type": "boolean"
-                  },
-                  "creditCard": {
-                      "$ref": "#/components/schemas/dto.CreditCardMethod"
-                  },
-                  "pix": {
-                      "type": "boolean"
-                  }
-              }
-          },
-          "dto.PaymentStatusDTO": {
-              "type": "object",
-              "properties": {
-                  "status": {
-                      "type": "string"
-                  }
-              }
-          },
-          "dto.ResponseBoletetoDTO": {
-              "type": "object",
-              "properties": {
-                  "bankLine": {
-                      "description": "Linha digitável do boleto bancário (usada para pagamento)",
-                      "type": "string",
-                      "example": "34191.78905 23456.789012 34567.890123 4 5678001000000001"
-                  },
-                  "barCode": {
-                      "description": "Código de barras do boleto bancário (para leitura em caixa eletrônico)",
-                      "type": "string",
-                      "example": "3419178905234567890123456789012345678001000000001"
-                  },
-                  "id": {
-                      "description": "ID interno opcional gerado pela plataforma",
-                      "type": "integer",
-                      "example": 1024
-                  },
-                  "pdf": {
-                      "description": "Link para o PDF do boleto gerado",
-                      "type": "string",
-                      "example": "https://pagamentos.exemplo.com/boleto/8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b.pdf"
-                  },
-                  "status": {
-                      "description": "Status atual da transação\n- pendingBoleto: Boleto em aberto\n- payedBoleto: Boleto compensado\n- notCompensated: Boleto baixado por decurso de prazo\n- lessValueBoleto: Pago valor menor que o original\n- moreValueBoleto: Pago valor maior que o original\n- paidDuplicityBoleto: Pago em duplicidade\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
-                      "type": "string",
-                      "example": "pendingBoleto"
-                  },
-                  "statusDate": {
-                      "description": "Data e hora da última atualização de status",
-                      "type": "string",
-                      "example": "2025-03-02T14:25:00Z"
-                  },
-                  "transactionId": {
-                      "description": "ID da transação gerada",
-                      "type": "string",
-                      "example": "8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b"
-                  }
-              }
-          },
-          "dto.ResponseCreditCardDTO": {
-              "type": "object",
-              "properties": {
-                  "authorizationCode": {
-                      "description": "Código de autorização fornecido pela operadora de cartão",
-                      "type": "string",
-                      "example": "123456789012"
-                  },
-                  "id": {
-                      "description": "ID interno opcional gerado pela plataforma",
-                      "type": "integer",
-                      "example": 1024
-                  },
-                  "reasonDenied": {
-                      "description": "Motivo pelo qual o pagamento foi negado, caso o status seja \"denied\"",
-                      "type": "string",
-                      "example": "Limite de crédito excedido"
-                  },
-                  "status": {
-                      "description": "Para Cartão de Crédito:\n- notSend: Ainda não enviada para operadora de Cartão\n- authorized: Autorizado\n- captured: Capturada na Operadora de Cartão\n- denied: Negada na Operadora de Cartão\n- reversed: Estornada na Operadora de Cartão\n- chargeback: Estorno por chargeback\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
-                      "type": "string",
-                      "example": "authorized"
-                  },
-                  "statusDate": {
-                      "description": "Data e hora da última atualização de status no formato ISO 8601",
-                      "type": "string",
-                      "example": "2025-03-02T14:25:00Z"
-                  },
-                  "statusDescription": {
-                      "description": "Descrição do status da transação, fornecida pela operadora",
-                      "type": "string",
-                      "example": "Pagamento autorizado pela operadora de cartão"
-                  },
-                  "transactionId": {
-                      "description": "ID da transação gerada",
-                      "type": "string",
-                      "example": "8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b"
-                  }
-              }
-          },
-          "dto.ResponseOrderDTO": {
-              "type": "object",
-              "properties": {
-                  "orderUrl": {
-                      "type": "string"
-                  }
-              }
-          },
-          "dto.ResponsePixDTO": {
-              "type": "object",
-              "properties": {
-                  "id": {
-                      "description": "ID interno opcional gerado pela plataforma",
-                      "type": "integer",
-                      "example": 1024
-                  },
-                  "image": {
-                      "description": "Imagem base64 do QR Code para exibição",
-                      "type": "string",
-                      "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
-                  },
-                  "page": {
-                      "description": "Link da página do QR Code.",
-                      "type": "string",
-                      "example": "https://pagamentos.exemplo.com/pix/8a3f7c1b"
-                  },
-                  "qrCode": {
-                      "description": "Código QR para pagamento via PIX",
-                      "type": "string",
-                      "example": "00020101021226830014br.gov.bcb.pix..."
-                  },
-                  "reference": {
-                      "description": "Identificador do QR Code que será exibido no app do banco ao realizar o pagamento.",
-                      "type": "string",
-                      "example": "pedido-123"
-                  },
-                  "status": {
-                      "description": "Status atual da transação\n- pendingPix: Pix em aberto\n- payedPix: Pix pago\n- unavailablePix: Pix indisponível para pagamento\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
-                      "type": "string",
-                      "example": "PENDING"
-                  },
-                  "statusDate": {
-                      "description": "Data e hora da última atualização de status no formato ISO 8601",
-                      "type": "string",
-                      "example": "2025-03-02T14:25:00Z"
-                  },
-                  "transactionId": {
-                      "description": "ID da transação gerada",
-                      "type": "string",
-                      "example": "8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b"
-                  }
-              }
-          },
-          "entities.OrderItem": {
-              "type": "object",
-              "properties": {
-                  "createdAt": {
-                      "type": "string"
-                  },
-                  "id": {
-                      "type": "integer"
-                  },
-                  "orderID": {
-                      "type": "integer"
-                  },
-                  "productImageUrl": {
-                      "type": "string"
-                  },
-                  "productPrice": {
-                      "type": "integer"
-                  },
-                  "productQuantity": {
-                      "type": "integer"
-                  },
-                  "productTitle": {
-                      "type": "string"
-                  },
-                  "total": {
-                      "type": "integer"
-                  },
-                  "updatedAt": {
-                      "type": "string"
-                  }
-              }
-          },
-          "http_response.ErrorResponse": {
-              "type": "object",
-              "properties": {
-                  "error": {
-                      "type": "boolean"
-                  },
-                  "message": {
-                      "type": "string"
-                  },
-                  "path": {
-                      "type": "string"
-                  },
-                  "timestamp": {
-                      "type": "string"
-                  },
-                  "title": {
-                      "type": "string"
-                  }
-              }
-          }
-      }
-  }
+    "openapi": "3.0.0",
+    "info": {
+        "description": "API para processamento de pagamentos integrada com a Celcoin e gestão de pedidos de checkout.",
+        "title": "API de Pagamentos - Cupulahub",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/auth/v1/create/credentials": {
+            "post": {
+                "description": "Gera clientId, clientSecret criptografado e token de autenticação base64.",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Criar clientId e clientSecret criptografados",
+                "responses": {
+                    "201": {
+                        "description": "Retorna clientId, clientSecret criptografado e token base64",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao gerar credenciais",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/v1/token": {
+            "post": {
+                "description": "Recebe clientId e clientSecret e retorna um token de autenticação base64 para ser utilizado nos headers de autorização.",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Autenticar clientId e clientSecret",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.AuthDto"
+                            }
+                        }
+                    },
+                    "description": "Credenciais do checkout: clientId e clientSecret",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token base64 de autenticação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.AuthResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida - JSON mal formatado ou campos ausentes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checkout/v1/boleto": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Este endpoint permite a criação de um novo pagamento via Boleto.",
+                "tags": [
+                    "Checkout"
+                ],
+                "summary": "Criar um novo pagamento via Boleto",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CreateBoletoDTO"
+                            }
+                        }
+                    },
+                    "description": "Dados do pagamento, incluindo informações do cliente e do valor",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Retorna os detalhes do boleto criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ResponseBoletetoDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida - Corpo da requisição inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado - Token ausente ou inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checkout/v1/creditCard": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Este endpoint permite a criação de um novo pagamento com cartão de crédito.",
+                "tags": [
+                    "Checkout"
+                ],
+                "summary": "Criar um novo pagamento com cartão de crédito",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CreateCreditCardPaymentDTO"
+                            }
+                        }
+                    },
+                    "description": "Dados do pagamento, incluindo informações do cliente e do valor",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Retorna os detalhes do pagamento com cartão de crédito criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ResponseBoletetoDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida - Corpo da requisição inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado - Token ausente ou inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checkout/v1/installments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna os planos de parcelamento com base nas credenciais da loja e no valor da transação em centavos.",
+                "tags": [
+                    "Parcelamentos"
+                ],
+                "summary": "Obter opções de parcelamento",
+                "parameters": [
+                    {
+                        "description": "Token de credencial da loja",
+                        "name": "storeCredentialToken",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Valor da transação em centavos",
+                        "name": "amount",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/dto.IResponseInstallmentOption"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Parâmetros da requisição inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checkout/v1/pix": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Este endpoint permite a criação de um novo pagamento via PIX.",
+                "tags": [
+                    "Checkout"
+                ],
+                "summary": "Criar um novo pagamento via PIX",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CreatePixDTO"
+                            }
+                        }
+                    },
+                    "description": "Dados do pagamento, incluindo informações do cliente e do valor",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Retorna os detalhes do pagamento PIX criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ResponsePixDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida - Corpo da requisição inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado - Token ausente ou inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/order/v1/create": {
+            "post": {
+                "description": "This endpoint allows the creation of a new order.",
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Create a new order",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CreateOrderDTO"
+                            }
+                        }
+                    },
+                    "description": "order data including customer details, shipping fee, and order items",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Returns the created order details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ResponseOrderDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/order/v1/{orderHash}": {
+            "get": {
+                "description": "This endpoint retrieves an order based on the provided OrderHash.",
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Get an order by OrderHash",
+                "parameters": [
+                    {
+                        "description": "OrderHash of the order to retrieve",
+                        "name": "orderHash",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the order details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ITransactionOrderResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid order OrderHash.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Failed to retrieve order.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payments/v1/": {
+            "post": {
+                "description": "This endpoint allows the creation of a new payment.",
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Create a new payment",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CreatePaymentDTO"
+                            }
+                        }
+                    },
+                    "description": "payment data including payment details and order information",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Returns the created payment details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.CreatePaymentResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Failed to create payment request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payments/v1/status/{transactionId}": {
+            "get": {
+                "description": "This endpoint allows to get payment status by transactionId.",
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Get payment status",
+                "parameters": [
+                    {
+                        "description": "transactionId",
+                        "name": "transactionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the payment status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.PaymentStatusDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid request body.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Failed to get payment status request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/v1/pix/{transactionOriginId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna os detalhes de uma transação PIX específica associada ao transactionOriginId",
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Buscar transação PIX por transactionOriginId",
+                "parameters": [
+                    {
+                        "description": "ID de origem da transação",
+                        "name": "transactionOriginId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/entities.TransactionPix"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Transação não encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://payments.service-sandbox.cupulahub.app"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        },
+        "schemas": {
+            "dto.AuthDto": {
+                "type": "object",
+                "properties": {
+                    "clientId": {
+                        "description": "Identificador do cliente fornecido pela plataforma",
+                        "type": "string",
+                        "example": "6019243747887025720438021"
+                    },
+                    "clientSecret": {
+                        "description": "Chave secreta associada ao clientId, usada para autenticação",
+                        "type": "string",
+                        "example": "(d#qLGesG%RrNMu(dVFZLAEcGWAmP$C!"
+                    }
+                }
+            },
+            "dto.AuthResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "description": "Token codificado em base64, utilizado para autenticação em chamadas subsequentes à API.\nDeve ser incluído no cabeçalho Authorization como: Bearer {token}",
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=="
+                    }
+                }
+            },
+            "dto.CreateBoletoDTO": {
+                "type": "object",
+                "properties": {
+                    "billingAddress": {
+                        "description": "Endereço de cobrança associado ao cliente",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
+                            }
+                        ]
+                    },
+                    "customer": {
+                        "description": "Informações do cliente que realizará o pagamento",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.Customer"
+                            }
+                        ]
+                    },
+                    "orderItems": {
+                        "description": "Lista de itens relacionados ao pedido (opcional)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dto.OrderItemDTO"
+                        }
+                    },
+                    "payDate": {
+                        "description": "Data do vencimento do boleto no formato YYYY-MM-DD",
+                        "type": "string",
+                        "example": "2025-03-02"
+                    },
+                    "storeCredentialToken": {
+                        "description": "Token de credencial da loja utilizado para autenticação da requisição",
+                        "type": "string"
+                    },
+                    "value": {
+                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
+                        "type": "integer",
+                        "example": 25000
+                    }
+                }
+            },
+            "dto.CreateCreditCardPaymentDTO": {
+                "type": "object",
+                "properties": {
+                    "billingAddress": {
+                        "description": "Endereço de cobrança do cliente",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
+                            }
+                        ]
+                    },
+                    "cardHash": {
+                        "description": "Hash do cartão de crédito (criptografado no frontend)",
+                        "type": "string"
+                    },
+                    "customer": {
+                        "description": "Informações do cliente responsável pelo pagamento",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.Customer"
+                            }
+                        ]
+                    },
+                    "orderItems": {
+                        "description": "Lista de itens incluídos no pedido",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dto.OrderItemDTO"
+                        }
+                    },
+                    "payDate": {
+                        "description": "Data do pagamento no formato YYYY-MM-DD",
+                        "type": "string",
+                        "example": "2025-03-02"
+                    },
+                    "qtdInstallments": {
+                        "description": "Quantidade de parcelas para o pagamento",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "storeCredentialToken": {
+                        "description": "Token de credencial da loja fornecido para autenticação",
+                        "type": "string"
+                    },
+                    "value": {
+                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
+                        "type": "integer",
+                        "example": 25000
+                    }
+                }
+            },
+            "dto.CreateCustomerAddressDTO": {
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "example": "São Paulo"
+                    },
+                    "complement": {
+                        "type": "string",
+                        "example": "Casa 2"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "Brasil"
+                    },
+                    "district": {
+                        "type": "string",
+                        "example": "Jardins"
+                    },
+                    "number": {
+                        "type": "string",
+                        "example": "456"
+                    },
+                    "state": {
+                        "type": "string",
+                        "example": "SP"
+                    },
+                    "street": {
+                        "type": "string",
+                        "example": "Rua Oscar Freire"
+                    },
+                    "zipCode": {
+                        "type": "string",
+                        "example": "69200970"
+                    }
+                }
+            },
+            "dto.CreateOrderDTO": {
+                "type": "object",
+                "properties": {
+                    "externalId": {
+                        "type": "string"
+                    },
+                    "orderItems": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dto.OrderItemDTO"
+                        }
+                    },
+                    "paymentMethods": {
+                        "$ref": "#/components/schemas/dto.PaymentMethods"
+                    },
+                    "shippingFee": {
+                        "type": "integer"
+                    },
+                    "storeCredentialToken": {
+                        "type": "string"
+                    }
+                }
+            },
+            "dto.CreatePaymentDTO": {
+                "type": "object",
+                "properties": {
+                    "billingAddress": {
+                        "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
+                    },
+                    "creditCardHash": {
+                        "type": "string"
+                    },
+                    "customer": {
+                        "$ref": "#/components/schemas/dto.Customer"
+                    },
+                    "installment": {
+                        "type": "integer"
+                    },
+                    "orderHash": {
+                        "type": "string"
+                    },
+                    "paymentMethod": {
+                        "type": "string"
+                    }
+                }
+            },
+            "dto.CreatePaymentResponseDTO": {
+                "type": "object",
+                "properties": {
+                    "boleto": {
+                        "$ref": "#/components/schemas/dto.ResponseBoletetoDTO"
+                    },
+                    "creditCard": {
+                        "$ref": "#/components/schemas/dto.ResponseCreditCardDTO"
+                    },
+                    "paymentMethod": {
+                        "type": "string"
+                    },
+                    "pix": {
+                        "$ref": "#/components/schemas/dto.ResponsePixDTO"
+                    }
+                }
+            },
+            "dto.CreatePixDTO": {
+                "type": "object",
+                "properties": {
+                    "billingAddress": {
+                        "description": "Endereço de cobrança associado ao cliente",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
+                            }
+                        ]
+                    },
+                    "customer": {
+                        "description": "Informações do cliente que realizará o pagamento",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.Customer"
+                            }
+                        ]
+                    },
+                    "orderItems": {
+                        "description": "Lista de itens relacionados ao pedido (opcional)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dto.OrderItemDTO"
+                        }
+                    },
+                    "payDate": {
+                        "description": "Data de vencimento do pagamento via PIX no formato YYYY-MM-DD",
+                        "type": "string",
+                        "example": "2025-03-02"
+                    },
+                    "storeCredentialToken": {
+                        "description": "Token de credencial da loja utilizado para autenticação da requisição",
+                        "type": "string",
+                        "example": "be5a8e6f1b853f89898379d6b7e559f2"
+                    },
+                    "value": {
+                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
+                        "type": "integer",
+                        "example": 25000
+                    }
+                }
+            },
+            "dto.CreditCardMethod": {
+                "type": "object",
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "maxInstallments": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "dto.Customer": {
+                "type": "object",
+                "properties": {
+                    "document": {
+                        "type": "string",
+                        "example": "11591923085"
+                    },
+                    "emails": {
+                        "type": "string",
+                        "example": "jhondoe@gmail.com"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Jhon doe"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+5594984097456"
+                    }
+                }
+            },
+            "dto.IResponseInstallmentOption": {
+                "type": "object",
+                "properties": {
+                    "fee": {
+                        "description": "Porcentagem da taxa de juros aplicada sobre o parcelamento",
+                        "type": "number",
+                        "example": 0.49
+                    },
+                    "installment": {
+                        "description": "Número da parcela (ex: 1 para pagamento à vista, 2 para duas parcelas, etc.)",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "installmentValue": {
+                        "description": "Valor de cada parcela em centavos (ex: 3334 representa R$ 33,34)",
+                        "type": "integer",
+                        "example": 3334
+                    },
+                    "total_amount": {
+                        "description": "Valor total do pagamento em centavos incluindo juros (ex: 10002 representa R$ 100,02)",
+                        "type": "integer",
+                        "example": 10002
+                    }
+                }
+            },
+            "dto.ITransactionOrderResponse": {
+                "type": "object",
+                "properties": {
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "externalID": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "installments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dto.IResponseInstallmentOption"
+                        }
+                    },
+                    "maxInstallments": {
+                        "type": "integer"
+                    },
+                    "orderHash": {
+                        "type": "string"
+                    },
+                    "orderItems": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/entities.OrderItem"
+                        }
+                    },
+                    "paymentMethods": {
+                        "type": "string"
+                    },
+                    "shippingFee": {
+                        "type": "integer"
+                    },
+                    "storeID": {
+                        "type": "integer"
+                    },
+                    "subtotal": {
+                        "type": "integer"
+                    },
+                    "totalAmount": {
+                        "type": "integer"
+                    },
+                    "transactionId": {
+                        "type": "integer"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    }
+                }
+            },
+            "dto.OrderItemDTO": {
+                "type": "object",
+                "properties": {
+                    "productImageUrl": {
+                        "type": "string",
+                        "example": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    },
+                    "productPrice": {
+                        "type": "integer",
+                        "example": 25000
+                    },
+                    "productQuantity": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "productTitle": {
+                        "type": "string",
+                        "example": "Tênis Nike"
+                    }
+                }
+            },
+            "dto.PaymentMethods": {
+                "type": "object",
+                "properties": {
+                    "boleto": {
+                        "type": "boolean"
+                    },
+                    "creditCard": {
+                        "$ref": "#/components/schemas/dto.CreditCardMethod"
+                    },
+                    "pix": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "dto.PaymentStatusDTO": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    }
+                }
+            },
+            "dto.ResponseBoletetoDTO": {
+                "type": "object",
+                "properties": {
+                    "bankLine": {
+                        "description": "Linha digitável do boleto bancário (usada para pagamento)",
+                        "type": "string",
+                        "example": "34191.78905 23456.789012 34567.890123 4 5678001000000001"
+                    },
+                    "barCode": {
+                        "description": "Código de barras do boleto bancário (para leitura em caixa eletrônico)",
+                        "type": "string",
+                        "example": "3419178905234567890123456789012345678001000000001"
+                    },
+                    "id": {
+                        "description": "ID interno opcional gerado pela plataforma",
+                        "type": "integer",
+                        "example": 1024
+                    },
+                    "pdf": {
+                        "description": "Link para o PDF do boleto gerado",
+                        "type": "string",
+                        "example": "https://pagamentos.exemplo.com/boleto/8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b.pdf"
+                    },
+                    "status": {
+                        "description": "Status atual da transação\n- pendingBoleto: Boleto em aberto\n- payedBoleto: Boleto compensado\n- notCompensated: Boleto baixado por decurso de prazo\n- lessValueBoleto: Pago valor menor que o original\n- moreValueBoleto: Pago valor maior que o original\n- paidDuplicityBoleto: Pago em duplicidade\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
+                        "type": "string",
+                        "example": "pendingBoleto"
+                    },
+                    "statusDate": {
+                        "description": "Data e hora da última atualização de status",
+                        "type": "string",
+                        "example": "2025-03-02T14:25:00Z"
+                    },
+                    "transactionOriginId": {
+                        "description": "ID da transação gerada",
+                        "type": "string",
+                        "example": "8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b"
+                    }
+                }
+            },
+            "dto.ResponseCreditCardDTO": {
+                "type": "object",
+                "properties": {
+                    "authorizationCode": {
+                        "description": "Código de autorização fornecido pela operadora de cartão",
+                        "type": "string",
+                        "example": "123456789012"
+                    },
+                    "id": {
+                        "description": "ID interno opcional gerado pela plataforma",
+                        "type": "integer",
+                        "example": 1024
+                    },
+                    "reasonDenied": {
+                        "description": "Motivo pelo qual o pagamento foi negado, caso o status seja \"denied\"",
+                        "type": "string",
+                        "example": "Limite de crédito excedido"
+                    },
+                    "status": {
+                        "description": "Para Cartão de Crédito:\n- notSend: Ainda não enviada para operadora de Cartão\n- authorized: Autorizado\n- captured: Capturada na Operadora de Cartão\n- denied: Negada na Operadora de Cartão\n- reversed: Estornada na Operadora de Cartão\n- chargeback: Estorno por chargeback\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
+                        "type": "string",
+                        "example": "authorized"
+                    },
+                    "statusDate": {
+                        "description": "Data e hora da última atualização de status no formato ISO 8601",
+                        "type": "string",
+                        "example": "2025-03-02T14:25:00Z"
+                    },
+                    "statusDescription": {
+                        "description": "Descrição do status da transação, fornecida pela operadora",
+                        "type": "string",
+                        "example": "Pagamento autorizado pela operadora de cartão"
+                    },
+                    "transactionOriginId": {
+                        "description": "ID da transação gerada",
+                        "type": "string",
+                        "example": "8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b"
+                    }
+                }
+            },
+            "dto.ResponseOrderDTO": {
+                "type": "object",
+                "properties": {
+                    "orderUrl": {
+                        "type": "string"
+                    }
+                }
+            },
+            "dto.ResponsePixDTO": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "ID interno opcional gerado pela plataforma",
+                        "type": "integer",
+                        "example": 1024
+                    },
+                    "image": {
+                        "description": "Imagem base64 do QR Code para exibição",
+                        "type": "string",
+                        "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+                    },
+                    "page": {
+                        "description": "Link da página do QR Code.",
+                        "type": "string",
+                        "example": "https://pagamentos.exemplo.com/pix/8a3f7c1b"
+                    },
+                    "qrCode": {
+                        "description": "Código QR para pagamento via PIX",
+                        "type": "string",
+                        "example": "00020101021226830014br.gov.bcb.pix..."
+                    },
+                    "reference": {
+                        "description": "Identificador do QR Code que será exibido no app do banco ao realizar o pagamento.",
+                        "type": "string",
+                        "example": "pedido-123"
+                    },
+                    "status": {
+                        "description": "Status atual da transação\n- pendingPix: Pix em aberto\n- payedPix: Pix pago\n- unavailablePix: Pix indisponível para pagamento\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
+                        "type": "string",
+                        "example": "PENDING"
+                    },
+                    "statusDate": {
+                        "description": "Data e hora da última atualização de status no formato ISO 8601",
+                        "type": "string",
+                        "example": "2025-03-02T14:25:00Z"
+                    },
+                    "transactionOriginId": {
+                        "description": "ID da transação gerada",
+                        "type": "string",
+                        "example": "8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b"
+                    }
+                }
+            },
+            "entities.OrderItem": {
+                "type": "object",
+                "properties": {
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "orderID": {
+                        "type": "integer"
+                    },
+                    "productImageUrl": {
+                        "type": "string"
+                    },
+                    "productPrice": {
+                        "type": "integer"
+                    },
+                    "productQuantity": {
+                        "type": "integer"
+                    },
+                    "productTitle": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    }
+                }
+            },
+            "entities.TransactionPix": {
+                "type": "object",
+                "properties": {
+                    "copyPaste": {
+                        "type": "string"
+                    },
+                    "expiration": {
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "key": {
+                        "type": "string"
+                    },
+                    "qrCode": {
+                        "type": "string"
+                    },
+                    "transactionId": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "http_response.ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
 }

@@ -23,9 +23,7 @@
           {
             "group": "Checkout endpoints",
             "pages": [
-              "checkout/boleto",
-              "checkout/pix",
-              "checkout/credit"
+              "checkout/pix"
             ]
           }
         ]
@@ -48,10 +46,8 @@
           {
             "group": "Checkout endpoints",
             "pages": [
-              "api-reference/checkout/create-payment-boleto",
               "api-reference/checkout/create-payment-pix",
-              "api-reference/checkout/create-payment-credit",
-              "api-reference/checkout/get-installments"
+              "api-reference/checkout/get-transaction-pix"
             ]
           }
         ]
