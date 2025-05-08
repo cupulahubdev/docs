@@ -625,12 +625,12 @@
                     "clientId": {
                         "description": "Identificador do cliente fornecido pela plataforma",
                         "type": "string",
-                        "example": "6019243747887025720438021"
+                        "example": "6703426626773350800709386"
                     },
                     "clientSecret": {
                         "description": "Chave secreta associada ao clientId, usada para autenticação",
                         "type": "string",
-                        "example": "(d#qLGesG%RrNMu(dVFZLAEcGWAmP$C!"
+                        "example": "anTxOD^pr(VLrRMojlGyJAFRLRH!tiWm"
                     }
                 }
             },
@@ -663,6 +663,11 @@
                             }
                         ]
                     },
+                    "expiratedAt": {
+                        "description": "Data do vencimento do boleto no formato YYYY-MM-DD",
+                        "type": "string",
+                        "example": "2025-03-02"
+                    },
                     "orderItems": {
                         "description": "Lista de itens relacionados ao pedido (opcional)",
                         "type": "array",
@@ -670,19 +675,14 @@
                             "$ref": "#/components/schemas/dto.OrderItemDTO"
                         }
                     },
-                    "payDate": {
-                        "description": "Data do vencimento do boleto no formato YYYY-MM-DD",
-                        "type": "string",
-                        "example": "2025-03-02"
-                    },
                     "storeCredentialToken": {
                         "description": "Token de credencial da loja utilizado para autenticação da requisição",
                         "type": "string"
                     },
                     "value": {
-                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
+                        "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
                         "type": "integer",
-                        "example": 25000
+                        "example": 500
                     }
                 }
             },
@@ -709,17 +709,17 @@
                             }
                         ]
                     },
+                    "expiratedAt": {
+                        "description": "Data do pagamento no formato YYYY-MM-DD",
+                        "type": "string",
+                        "example": "2025-03-02"
+                    },
                     "orderItems": {
                         "description": "Lista de itens incluídos no pedido",
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/dto.OrderItemDTO"
                         }
-                    },
-                    "payDate": {
-                        "description": "Data do pagamento no formato YYYY-MM-DD",
-                        "type": "string",
-                        "example": "2025-03-02"
                     },
                     "qtdInstallments": {
                         "description": "Quantidade de parcelas para o pagamento",
@@ -856,6 +856,11 @@
                             }
                         ]
                     },
+                    "expiratedAt": {
+                        "description": "Data de vencimento do pagamento via PIX no formato YYYY-MM-DD",
+                        "type": "string",
+                        "example": "2025-03-02"
+                    },
                     "orderItems": {
                         "description": "Lista de itens relacionados ao pedido (opcional)",
                         "type": "array",
@@ -863,20 +868,15 @@
                             "$ref": "#/components/schemas/dto.OrderItemDTO"
                         }
                     },
-                    "payDate": {
-                        "description": "Data de vencimento do pagamento via PIX no formato YYYY-MM-DD",
-                        "type": "string",
-                        "example": "2025-03-02"
-                    },
                     "storeCredentialToken": {
                         "description": "Token de credencial da loja utilizado para autenticação da requisição",
                         "type": "string",
-                        "example": "be5a8e6f1b853f89898379d6b7e559f2"
+                        "example": "928e2856a9d5cffbb7edfa92b2775060"
                     },
                     "value": {
                         "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
                         "type": "integer",
-                        "example": 25000
+                        "example": 500
                     }
                 }
             },
@@ -898,7 +898,7 @@
                         "type": "string",
                         "example": "11591923085"
                     },
-                    "emails": {
+                    "email": {
                         "type": "string",
                         "example": "jhondoe@gmail.com"
                     },
@@ -1028,7 +1028,7 @@
                     },
                     "productPrice": {
                         "type": "integer",
-                        "example": 25000
+                        "example": 500
                     },
                     "productQuantity": {
                         "type": "integer",
@@ -1180,7 +1180,11 @@
                     },
                     "status": {
                         "description": "Status atual da transação\n- pendingPix: Pix em aberto\n- payedPix: Pix pago\n- unavailablePix: Pix indisponível para pagamento\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
-                        "type": "string",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entities.TransactionStatus"
+                            }
+                        ],
                         "example": "PENDING"
                     },
                     "statusDate": {
@@ -1226,6 +1230,27 @@
                         "type": "string"
                     }
                 }
+            },
+            "entities.TransactionStatus": {
+                "type": "string",
+                "enum": [
+                    "PENDING",
+                    "PAID",
+                    "FAILED",
+                    "REFUNDED",
+                    "CHARGEBACK",
+                    "EXPIRED",
+                    "UNAUTHORIZED"
+                ],
+                "x-enum-varnames": [
+                    "TransactionStatusPending",
+                    "TransactionStatusPaid",
+                    "TransactionStatusFailed",
+                    "TransactionStatusRefunded",
+                    "TransactionStatusChargeback",
+                    "TransactionStatusExpired",
+                    "TransactionStatusUnauthorized"
+                ]
             },
             "http_response.ErrorResponse": {
                 "type": "object",

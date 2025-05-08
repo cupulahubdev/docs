@@ -1,0 +1,26 @@
+---
+title: Webhooks de Transação
+description: "Como funcionam os webhooks"
+icon: 'bell'
+---
+
+## Webhooks de Notificação de Transação
+
+Sempre que uma transação for registrada, um **webhook será automaticamente enviado** para a URL previamente informada.
+
+### Como configurar
+
+Para começar a receber notificações, é necessário informar a URL do seu endpoint de webhook para o nosso time de suporte.
+
+> 📩 Entre em contato pelo canal oficial de suporte e forneça a URL completa onde deseja receber os eventos de transação.
+
+### Payload do Webhook
+
+O corpo da requisição enviada ao seu endpoint será no formato JSON:
+
+```json
+{
+  "transactionOriginId": "a1b2c3d4-e5f6-7890-ab12-cd34ef567890",
+  "status": "PAID",
+  "created_at": "2025-05-07T14:32:10Z"
+}

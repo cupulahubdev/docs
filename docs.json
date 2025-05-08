@@ -17,14 +17,9 @@
             "group": "Comece",
             "pages": [
               "index",
-              "auth"
-            ]
-          },
-          {
-            "group": "Checkout endpoints",
-            "pages": [
-              "checkout/pix",
-              "checkout/get-transaction-pix"
+              "auth",
+              "reference-sandbox",
+              "webhook"
             ]
           }
         ]

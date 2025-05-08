@@ -1,0 +1,48 @@
+---
+title: Ambiente de sandbox
+description: "Como integrar em nossa api para testes"
+icon: 'robot'
+---
+
+## Regras de Status para Pagamento via PIX (SANDBOX)
+
+<Alert type="info">
+  Em ambiente <strong>SANDBOX</strong>, o status da transação é definido automaticamente com base no valor informado em <strong>centavos</strong>.
+</Alert>
+
+### Tabela de Status por Faixa de Valor
+
+| Valor (centavos)   | Status         | Descrição                    |
+|--------------------|----------------|------------------------------|
+| 100 a 500          | `PAID`         | Pagamento confirmado         |
+| 501 a 1000         | `PENDING`      | Aguardando pagamento         |
+| 1001 a 1500        | `UNAUTHORIZED` | Pagamento não autorizado     |
+| 1501 a 2000        | `CHARGEBACK`   | Estorno realizado            |
+| 2001 a 2500        | `REFUNDED`     | Pagamento devolvido          |
+| 2501 a 3000        | `FAILED`       | Falha no pagamento           |
+| 3001 a 3500        | `EXPIRED`      | Pagamento expirado           |
+
+> ⚠️ Valores fora dessa faixa podem ser considerados inválidos ou não retornar um status esperado.
+
+---
+
+## Webhooks no Ambiente de Sandbox
+
+<Alert type="info">
+  Em <strong>SANDBOX</strong>, o envio do webhook ocorre <strong>imediatamente</strong> após o registro da transação ser capturado pelo sistema, simulando um fluxo real de pagamento.
+</Alert>
+
+### Como configurar
+
+Para receber notificações de transações, é necessário informar sua URL de webhook ao nosso time de suporte.
+
+> 📩 Entre em contato com o suporte técnico e forneça a URL pública do seu endpoint.
+
+### Payload de exemplo
+
+```json
+{
+  "transactionOriginId": "a1b2c3d4-e5f6-7890-ab12-cd34ef567890",
+  "status": "PAID",
+  "created_at": "2025-05-07T14:32:10Z"
+}
