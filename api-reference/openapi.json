@@ -294,6 +294,17 @@
                     "Checkout"
                 ],
                 "summary": "Criar um novo pagamento via PIX",
+                "parameters": [
+                    {
+                        "description": "Token da credencial da loja",
+                        "name": "X-STORE-CREDENTIAL",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -317,7 +328,7 @@
                         }
                     },
                     "400": {
-                        "description": "Requisição inválida - Corpo da requisição inválido.",
+                        "description": "Requisição inválida - Corpo da requisição ou header inválido.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -330,6 +341,73 @@
                         "description": "Não autorizado - Token ausente ou inválido.",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checkout/v1/{transactionOriginId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna os dados de uma transação Pix a partir do transactionOriginId.",
+                "tags": [
+                    "Checkout"
+                ],
+                "summary": "Obter dados da transação Pix",
+                "parameters": [
+                    {
+                        "description": "ID de origem da transação",
+                        "name": "transactionOriginId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ResponseCheckoutPixDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "*/*": {
                                 "schema": {
                                     "$ref": "#/components/schemas/http_response.ErrorResponse"
                                 }
@@ -536,78 +614,11 @@
                     }
                 }
             }
-        },
-        "/transactions/v1/pix/{transactionOriginId}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna os detalhes de uma transação PIX específica associada ao transactionOriginId",
-                "tags": [
-                    "Transactions"
-                ],
-                "summary": "Buscar transação PIX por transactionOriginId",
-                "parameters": [
-                    {
-                        "description": "ID de origem da transação",
-                        "name": "transactionOriginId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.GetTransactionPixDto"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Requisição inválida",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Transação não encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "servers": [
         {
-            "url": "https://payments.service-sandbox.cupulahub.app"
+            "url": "https://checkout.sandbox.cupulahub.app"
         }
     ],
     "components": {
@@ -856,22 +867,12 @@
                             }
                         ]
                     },
-                    "expiratedAt": {
-                        "description": "Data de vencimento do pagamento via PIX no formato YYYY-MM-DD",
-                        "type": "string",
-                        "example": "2025-03-02"
-                    },
                     "orderItems": {
                         "description": "Lista de itens relacionados ao pedido (opcional)",
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/dto.OrderItemDTO"
                         }
-                    },
-                    "storeCredentialToken": {
-                        "description": "Token de credencial da loja utilizado para autenticação da requisição",
-                        "type": "string",
-                        "example": "928e2856a9d5cffbb7edfa92b2775060"
                     },
                     "value": {
                         "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
@@ -909,35 +910,6 @@
                     "phone": {
                         "type": "string",
                         "example": "+5594984097456"
-                    }
-                }
-            },
-            "dto.GetTransactionPixDto": {
-                "type": "object",
-                "properties": {
-                    "copyPaste": {
-                        "description": "Código Pix no formato 'copia e cola'\nexample: \"00020126360014BR.GOV.BCB.PIX0114+5511999999995204000053039865405123.455802BR5913Nome do Cliente6010SAO PAULO62070503***6304ABCD\"",
-                        "type": "string"
-                    },
-                    "expiration": {
-                        "description": "Tempo de expiração do QR Code em segundos (padrão: 86400 = 24h)\nexample: 86400",
-                        "type": "integer"
-                    },
-                    "id": {
-                        "description": "ID interno da transação no sistema\nexample: 1",
-                        "type": "integer"
-                    },
-                    "key": {
-                        "description": "Chave Pix utilizada na transação (CPF, CNPJ, e-mail, telefone ou chave aleatória)\nexample: \"123e4567-e89b-12d3-a456-426614174000\"",
-                        "type": "string"
-                    },
-                    "qrCode": {
-                        "description": "QR Code gerado para o pagamento via Pix\nexample: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...\"",
-                        "type": "string"
-                    },
-                    "transactionId": {
-                        "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
-                        "type": "integer"
                     }
                 }
             },
@@ -1099,6 +1071,59 @@
                         "description": "ID da transação gerada",
                         "type": "string",
                         "example": "8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b"
+                    }
+                }
+            },
+            "dto.ResponseCheckoutPixDTO": {
+                "type": "object",
+                "properties": {
+                    "billingAddress": {
+                        "description": "Endereço de cobrança associado ao cliente",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
+                            }
+                        ]
+                    },
+                    "copyPaste": {
+                        "description": "Código Pix no formato 'copia e cola'\nexample: \"00020126360014BR.GOV.BCB.PIX0114+5511999999995204000053039865405123.455802BR5913Nome do Cliente6010SAO PAULO62070503***6304ABCD\"",
+                        "type": "string"
+                    },
+                    "customer": {
+                        "description": "Informações do cliente que realizará o pagamento",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.Customer"
+                            }
+                        ]
+                    },
+                    "expiration": {
+                        "description": "Tempo de expiração do QR Code em segundos (padrão: 86400 = 24h)\nexample: 86400",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "description": "ID interno da transação no sistema\nexample: 1",
+                        "type": "integer"
+                    },
+                    "orderItems": {
+                        "description": "Lista de itens relacionados ao pedido (opcional)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dto.OrderItemDTO"
+                        }
+                    },
+                    "qrCode": {
+                        "description": "QR Code gerado para o pagamento via Pix\nexample: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...\"",
+                        "type": "string"
+                    },
+                    "transactionId": {
+                        "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
+                        "type": "integer"
+                    },
+                    "value": {
+                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
+                        "type": "integer",
+                        "example": 500
                     }
                 }
             },

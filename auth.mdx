@@ -5,83 +5,57 @@ description: 'Como se autenticar para utilizar a api'
 
 ---
 
-## ✅ Etapa 1 – Obtenha suas credenciais
+### Etapa 1 – Obtenha suas credenciais
+Para iniciar a autenticação, você precisa ter em mãos dois pares de credenciais: um para o ambiente **sandbox** (teste) e outro para o ambiente de **produção**. Cada par contém um `clientId` e um `clientSecret`, que são fornecidos pela equipe da Cúpula.
+> **Importante:** mantenha essas credenciais em local seguro e nunca as compartilhe publicamente.
 
-Para iniciar a autenticação, você precisa ter em mãos seu `clientId` e `clientSecret`.  
-Essas credenciais são fornecidas pela equipe da **Cúpula** e identificam sua aplicação.
-
-> ⚠️ Essas informações são sensíveis. Armazene com segurança e **nunca compartilhe publicamente**.
-
----
-
-## 🚀 Etapa 2 – Solicite o token de acesso
-
-Com as credenciais em mãos, envie uma requisição `POST` para o endpoint de autenticação:
-
-```http
-POST https://payments.service-dev.cupulahub.app/auth/v1/token
-```
-
-### Corpo da requisição (JSON):
-
+### Etapa 2 – Solicite o token de acesso
+Com as credenciais em mãos, envie uma requisição HTTP POST para o endpoint de autenticação correspondente ao ambiente desejado:
+| Ambiente   | URL de Autenticação                                     |
+|------------|----------------------------------------------------------|
+| Sandbox    | `https://checkout.sandbox.cupulahub.app/auth/v1/token` |
+| Produção   | `https://checkout.cupulahub.app/auth/v1/token`     |
+A requisição deve conter o seguinte corpo JSON:
 ```json
 {
   "clientId": "SEU_CLIENT_ID",
   "clientSecret": "SEU_CLIENT_SECRET"
 }
 ```
-
-### Header necessário:
-
+E incluir o header:
 ```http
 Content-Type: application/json
 ```
-
+#### Exemplo com cURL
+```bash
+curl -X POST https://checkout.sandbox.cupulahub.app/auth/v1/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "clientId": "SEU_CLIENT_ID",
+    "clientSecret": "SEU_CLIENT_SECRET"
+  }'
+```
 ---
-
-## 📅 Etapa 3 – Receba o token no formato base64
-
-Se as credenciais forem válidas, a resposta será semelhante a:
-
+### Etapa 3 – Receba o token JWT
+Se as credenciais forem válidas, a API retornará uma resposta com o token de autenticação no seguinte formato:
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=="
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
-
-Esse token será usado para autenticar todas as requisições futuras à API.
-
----
-
-## 📡 Etapa 4 – Envie o token nas requisições autenticadas
-
-Inclua o token no cabeçalho `Authorization` em todas as chamadas à API:
-
+Esse token deve ser usado nas requisições futuras para acessar os serviços da API da Cúpula, sendo incluído no header como:
 ```http
-Authorization: Bearer SEU_TOKEN
+Authorization: Bearer {token}
 ```
-
-> Substitua `SEU_TOKEN` pelo valor retornado na etapa anterior.
-
-### Exemplo de requisição usando cURL:
-
-```bash
-curl --request GET \
-  --url https://payments.service-dev.cupulahub.app/exemplo-de-endpoint \
-  --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=="
-```
-
+> **Dica:** Tokens possuem validade limitada. Armazene-o com segurança e renove quando necessário.
 ---
-
-## ❌ Etapa 5 – Trate erros comuns de autenticação
-
-A API pode retornar os seguintes erros relacionados à autenticação:
-
-- `400 Bad Request`: parâmetros ausentes ou inválidos.
-- `401 Unauthorized`: token ausente, malformado, inválido ou expirado.
-
-> 🔁 Certifique-se de renovar o token quando ele expirar e valide se ele está sendo enviado corretamente no cabeçalho da requisição.
-
+### Possíveis erros e como tratá-los
+| Código HTTP | Motivo                        | Ação sugerida                           |
+|-------------|-------------------------------|------------------------------------------|
+| 401         | Credenciais inválidas         | Verifique o `clientId` e `clientSecret` |
+| 400         | Corpo da requisição inválido  | Verifique o formato do JSON enviado     |
+| 500         | Erro interno                  | Tente novamente ou contate o suporte     |
 ---
-
-Pronto! Sua aplicação já pode consumir os recursos da API de forma segura e autenticada.
+### Renovação do token
+O token JWT possui validade definida no momento da geração. Para continuar utilizando a API após expiração, basta repetir o processo da **Etapa 2** com as mesmas credenciais para obter um novo token.
+````

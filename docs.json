@@ -19,7 +19,8 @@
               "index",
               "auth",
               "reference-sandbox",
-              "webhook"
+              "webhook",
+              "store-collect-data"
             ]
           }
         ]

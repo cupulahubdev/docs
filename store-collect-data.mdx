@@ -1,0 +1,13 @@
+---
+title: 'O que coletar da loja?'
+---
+
+Para integrar a loja com os serviços da Cúpula, é necessário coletar as seguintes informações:
+### 🔐 Token de Integração
+O token de integração é a chave principal que permite **identificar o lojista** em cada requisição enviada à API da Cúpula. Ele deve ser armazenado com segurança e nunca exposto publicamente.
+Esse token deve ser incluído no cabeçalho HTTP com a chave:
+```
+X-STORE-CREDENTIAL: SEU\_TOKEN\_AQUI
+```
+> **Importante:** Atualmente, o único meio de pagamento disponível para integração é o **Pix**.
+Em breve, novas formas de pagamento estarão disponíveis. Fique atento às atualizações da plataforma.
