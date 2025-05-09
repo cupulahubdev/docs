@@ -742,7 +742,7 @@
                         "type": "string"
                     },
                     "value": {
-                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
+                        "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
                         "type": "integer",
                         "example": 25000
                     }
@@ -875,7 +875,7 @@
                         }
                     },
                     "value": {
-                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
+                        "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
                         "type": "integer",
                         "example": 500
                     }
@@ -1121,7 +1121,7 @@
                         "type": "integer"
                     },
                     "value": {
-                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
+                        "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
                         "type": "integer",
                         "example": 500
                     }
