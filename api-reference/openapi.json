@@ -296,7 +296,7 @@
                 "summary": "Criar um novo pagamento via PIX",
                 "parameters": [
                     {
-                        "description": "Token da credencial da loja",
+                        "description": "Token da credencial da loja. Utilize este para testar: 928e2856a9d5cffbb7edfa92b2775060",
                         "name": "X-STORE-CREDENTIAL",
                         "in": "header",
                         "required": true,
