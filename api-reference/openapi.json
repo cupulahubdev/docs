@@ -296,7 +296,7 @@
                 "summary": "Criar um novo pagamento via PIX",
                 "parameters": [
                     {
-                        "description": "Token da credencial da loja. Utilize este para testar: 928e2856a9d5cffbb7edfa92b2775060",
+                        "description": "Token da credencial da loja. Utilize este para testar: 2028c7b89ccb7fc79afa540bda12772f",
                         "name": "X-STORE-CREDENTIAL",
                         "in": "header",
                         "required": true,
@@ -874,10 +874,63 @@
                             "$ref": "#/components/schemas/dto.OrderItemDTO"
                         }
                     },
+                    "shippingAddress": {
+                        "description": "Endereço de entrega associado à transação (opcional)",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateShippingAddressDTO"
+                            }
+                        ]
+                    },
                     "value": {
                         "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
                         "type": "integer",
                         "example": 500
+                    }
+                }
+            },
+            "dto.CreateShippingAddressDTO": {
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "description": "Cidade do endereço",
+                        "type": "string",
+                        "example": "São Paulo"
+                    },
+                    "complement": {
+                        "description": "Complemento do endereço (ex: apartamento, bloco, etc.)",
+                        "type": "string",
+                        "example": "Apto 101"
+                    },
+                    "country": {
+                        "description": "País do endereço",
+                        "type": "string",
+                        "example": "Brasil"
+                    },
+                    "neighborhood": {
+                        "description": "Bairro do endereço",
+                        "type": "string",
+                        "example": "Centro"
+                    },
+                    "state": {
+                        "description": "Estado do endereço",
+                        "type": "string",
+                        "example": "SP"
+                    },
+                    "street": {
+                        "description": "Nome da rua do endereço de entrega",
+                        "type": "string",
+                        "example": "Rua das Flores"
+                    },
+                    "streetNumber": {
+                        "description": "Número do endereço",
+                        "type": "string",
+                        "example": "123"
+                    },
+                    "zipCode": {
+                        "description": "Código postal (CEP) do endereço",
+                        "type": "string",
+                        "example": "12345-678"
                     }
                 }
             },
@@ -1115,6 +1168,14 @@
                     "qrCode": {
                         "description": "QR Code gerado para o pagamento via Pix\nexample: \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...\"",
                         "type": "string"
+                    },
+                    "shippingAddress": {
+                        "description": "Endereço de entrega associado à transação (opcional)",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateShippingAddressDTO"
+                            }
+                        ]
                     },
                     "transactionId": {
                         "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
