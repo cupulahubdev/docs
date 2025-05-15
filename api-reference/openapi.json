@@ -868,7 +868,7 @@
                         ]
                     },
                     "orderItems": {
-                        "description": "Lista de itens relacionados ao pedido (opcional)",
+                        "description": "Lista de itens relacionados ao pedido",
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/dto.OrderItemDTO"
