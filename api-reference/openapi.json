@@ -1177,6 +1177,15 @@
                             }
                         ]
                     },
+                    "status": {
+                        "description": "Status da transação\ntipos de status: PAID, FAILED, REFUNDED, CHARGEBACK. EXPIRED, UNAUTHORIZED E PENDING",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entities.TransactionStatus"
+                            }
+                        ],
+                        "example": "PENDING"
+                    },
                     "transactionId": {
                         "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
                         "type": "integer"
