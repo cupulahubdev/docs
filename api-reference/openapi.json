@@ -636,12 +636,12 @@
                     "clientId": {
                         "description": "Identificador do cliente fornecido pela plataforma",
                         "type": "string",
-                        "example": "6703426626773350800709386"
+                        "example": "9575828444426319765059508"
                     },
                     "clientSecret": {
                         "description": "Chave secreta associada ao clientId, usada para autenticação",
                         "type": "string",
-                        "example": "anTxOD^pr(VLrRMojlGyJAFRLRH!tiWm"
+                        "example": "fXTf(LAKQyO$Hl)$FYY#hVuToiAVini&"
                     }
                 }
             },
@@ -651,7 +651,7 @@
                     "token": {
                         "description": "Token codificado em base64, utilizado para autenticação em chamadas subsequentes à API.\nDeve ser incluído no cabeçalho Authorization como: Bearer {token}",
                         "type": "string",
-                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=="
+                        "example": "OTU3NTgyODQ0NDQyNjMxOTc2NTA1OTUwODpmWFRmKExBS1F5TyRIbCkkRllZI2hWdVRvaUFWaW5pJg=="
                     }
                 }
             },
