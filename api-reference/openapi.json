@@ -636,12 +636,12 @@
                     "clientId": {
                         "description": "Identificador do cliente fornecido pela plataforma",
                         "type": "string",
-                        "example": "9575828444426319765059508"
+                        "example": "2599392737807255302337010"
                     },
                     "clientSecret": {
                         "description": "Chave secreta associada ao clientId, usada para autenticação",
                         "type": "string",
-                        "example": "fXTf(LAKQyO$Hl)$FYY#hVuToiAVini&"
+                        "example": "hbonLVy(UkugLyrYB&KL^rNPHvcnN*hJ"
                     }
                 }
             },
@@ -651,7 +651,7 @@
                     "token": {
                         "description": "Token codificado em base64, utilizado para autenticação em chamadas subsequentes à API.\nDeve ser incluído no cabeçalho Authorization como: Bearer {token}",
                         "type": "string",
-                        "example": "OTU3NTgyODQ0NDQyNjMxOTc2NTA1OTUwODpmWFRmKExBS1F5TyRIbCkkRllZI2hWdVRvaUFWaW5pJg=="
+                        "example": "MjU5OTM5MjczNzgwNzI1NTMwMjMzNzAxMDpoYm9uTFZ5KFVrdWdMeXJZQiZLTF5yTlBIdmNuTipoSg=="
                     }
                 }
             },
@@ -873,6 +873,10 @@
                         "items": {
                             "$ref": "#/components/schemas/dto.OrderItemDTO"
                         }
+                    },
+                    "postbackUrl": {
+                        "description": "Url para envio de webhook com o resultado da transação",
+                        "type": "string"
                     },
                     "shippingAddress": {
                         "description": "Endereço de entrega associado à transação (opcional)",

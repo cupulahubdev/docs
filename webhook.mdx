@@ -6,15 +6,64 @@ icon: 'bell'
 
 ## Webhooks de Notificação de Transação
 
-Sempre que uma transação for registrada, um **webhook será automaticamente enviado** para a URL previamente informada.
+Sempre que uma transação for registrada, um webhook será automaticamente enviado para a URL informada no momento da criação da transação, por meio do campo postbackUrl.
 
 ### Como configurar
 
-Para começar a receber notificações, é necessário informar a URL do seu endpoint de webhook para o nosso time de suporte.
+Para começar a receber notificações, você deve informar o campo `postbackUrl` no corpo da requisição de criação da transação.
 
-> 📩 Entre em contato pelo canal oficial de suporte e forneça a URL completa onde deseja receber os eventos de transação.
+Veja abaixo um exemplo de requisição com o `postbackUrl`:
 
-### Payload do Webhook
+```json
+curl -X 'POST' \
+  'https://checkout.sandbox.cupulahub.app/v1/pix' \
+  -H 'accept: application/json' \
+  -H 'X-STORE-CREDENTIAL: 2028c7b89ccb7fc79afa540bda12772f' \
+  -H 'Authorization: Bearer MjU5OTM5MjczNzgwNzI1NTMwMjMzNzAxMDpoYm9uTFZ5KFVrdWdMeXJZQiZLTF5yTlBIdmNuTipoSg==' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "billingAddress": {
+    "city": "São Paulo",
+    "complement": "Casa 2",
+    "country": "Brasil",
+    "district": "Jardins",
+    "number": "456",
+    "state": "SP",
+    "street": "Rua Oscar Freire",
+    "zipCode": "69200970"
+  },
+  "customer": {
+    "document": "11591923085",
+    "email": "jhondoe@gmail.com",
+    "name": "Jhon doe",
+    "phone": "+5594984097456"
+  },
+  "orderItems": [
+    {
+      "productImageUrl": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "productPrice": 500,
+      "productQuantity": 1,
+      "productTitle": "Tênis Nike"
+    }
+  ],
+  "postbackUrl": "https://webhook-test.com/8bd23e05e41975fb7f16b4f174f4ad8f",
+  "shippingAddress": {
+    "city": "São Paulo",
+    "complement": "Apto 101",
+    "country": "Brasil",
+    "neighborhood": "Centro",
+    "state": "SP",
+    "street": "Rua das Flores",
+    "streetNumber": "123",
+    "zipCode": "12345-678"
+  },
+  "value": 500
+}'
+````
+
+📌 O `postbackUrl` é obrigatório para que possamos saber qual a URL deve receber os webhooks de status da transação.
+
+### Payload de resposta do Webhook
 
 O corpo da requisição enviada ao seu endpoint será no formato JSON:
 
