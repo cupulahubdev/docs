@@ -1,12 +1,15 @@
 ---
-title: '🔐 Autenticação da API'
+title: 'Autenticação da API'
 description: 'Como se autenticar para utilizar a api'
+icon: 'lock-keyhole'
 ---
 
 ---
 
 ### Etapa 1 – Obtenha suas credenciais
 Para iniciar a autenticação, você precisa ter em mãos dois pares de credenciais: um para o ambiente **sandbox** (teste) e outro para o ambiente de **produção**. Cada par contém um `clientId` e um `clientSecret`, que são fornecidos pela equipe da Cúpula.
+O token de autenticação é gerado no formato Base64. Esse token NÃO EXPIRA, ou seja, pode ser utilizado indefinidamente sem necessidade de renovação.
+
 > **Importante:** mantenha essas credenciais em local seguro e nunca as compartilhe publicamente.
 
 ### Etapa 2 – Solicite o token de acesso
@@ -36,7 +39,7 @@ curl -X POST https://checkout.sandbox.cupulahub.app/auth/v1/token \
   }'
 ```
 ---
-### Etapa 3 – Receba o token JWT
+### Etapa 3 – Receba o token gerado
 Se as credenciais forem válidas, a API retornará uma resposta com o token de autenticação no seguinte formato:
 ```json
 {
@@ -47,15 +50,3 @@ Esse token deve ser usado nas requisições futuras para acessar os serviços da
 ```http
 Authorization: Bearer {token}
 ```
-> **Dica:** Tokens possuem validade limitada. Armazene-o com segurança e renove quando necessário.
----
-### Possíveis erros e como tratá-los
-| Código HTTP | Motivo                        | Ação sugerida                           |
-|-------------|-------------------------------|------------------------------------------|
-| 401         | Credenciais inválidas         | Verifique o `clientId` e `clientSecret` |
-| 400         | Corpo da requisição inválido  | Verifique o formato do JSON enviado     |
-| 500         | Erro interno                  | Tente novamente ou contate o suporte     |
----
-### Renovação do token
-O token JWT possui validade definida no momento da geração. Para continuar utilizando a API após expiração, basta repetir o processo da **Etapa 2** com as mesmas credenciais para obter um novo token.
-````

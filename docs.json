@@ -20,7 +20,8 @@
               "auth",
               "reference-sandbox",
               "webhook",
-              "store-collect-data"
+              "store-collect-data",
+              "erros-common"
             ]
           }
         ]

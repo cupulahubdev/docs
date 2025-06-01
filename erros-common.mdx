@@ -1,0 +1,62 @@
+---
+title: Erros Comuns
+description: "Guia detalhado para solução de erros frequentes na API da Cúpula."
+icon: "ban"
+---
+
+# 🛠️ Erros Comuns e Como Resolver
+
+Esta página apresenta os principais códigos de erro e mensagens que podem ocorrer durante o uso da API da **Cúpula**, com instruções práticas para resolução.
+
+> ❗ **Antes de abrir um chamado de suporte, consulte esta página.**  
+> Na maioria dos casos, o problema pode ser resolvido rapidamente seguindo os passos abaixo.
+
+---
+
+## 🔴 Erros de Autenticação
+
+### `401 - Unauthorized`
+
+**Descrição:** O token de autenticação está ausente, inválido ou mal formatado.
+
+**Como resolver:**
+
+- Verifique se o token está sendo enviado corretamente no cabeçalho:  
+  `Authorization: Bearer <seu_token>`
+- Confirme se suas credenciais estão corretas.
+- Certifique-se de estar utilizando o ambiente correto (produção ou sandbox).
+
+---
+
+## 🟠 Erros de Requisição
+
+### `400 - Request body is not valid JSON`
+
+**Descrição:** O corpo da requisição não está em um formato JSON válido.
+
+**Como resolver:**
+
+- Certifique-se de que o corpo da requisição esteja com a sintaxe JSON correta.
+- Verifique se:
+  - As aspas estão corretamente fechadas (`"`)
+  - Não há vírgulas sobrando após o último item de um objeto ou array
+  - O `Content-Type` do header está definido como `application/json`
+- Utilize ferramentas como [JSONLint](https://jsonlint.com/) para validar o JSON antes do envio.
+
+---
+
+## 🔧 Erros Internos
+
+### `500 - Internal Server Error`
+
+**Descrição:** Ocorreu um erro inesperado no servidor da API.
+
+**Como resolver:**
+
+- Tente reenviar a requisição após alguns instantes.
+- Caso o erro persista, entre em contato com o suporte técnico da Cúpula e informe:
+  - O endpoint acessado
+  - O corpo da requisição (se aplicável)
+  - A hora aproximada do erro
+  - O código HTTP retornado
+---
