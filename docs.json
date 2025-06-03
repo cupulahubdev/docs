@@ -20,9 +20,9 @@
               "auth",
               "reference-sandbox",
               "webhook",
-              "tokenizer-credit-card",
               "store-collect-data",
-              "erros-common"
+              "erros-common",
+              "tokenizer-card"
             ]
           }
         ]
