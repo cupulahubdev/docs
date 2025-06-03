@@ -150,6 +150,73 @@
                 }
             }
         },
+        "/checkout/v1/credit/{transactionOriginId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna os dados de uma transação com cartão de crédito a partir do transactionOriginId.",
+                "tags": [
+                    "Checkout"
+                ],
+                "summary": "Obter dados da transação de cartão de crédito",
+                "parameters": [
+                    {
+                        "description": "ID de origem da transação",
+                        "name": "transactionOriginId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ResponseCheckoutCreditCardDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/checkout/v1/creditCard": {
             "post": {
                 "security": [
@@ -162,6 +229,17 @@
                     "Checkout"
                 ],
                 "summary": "Criar um novo pagamento com cartão de crédito",
+                "parameters": [
+                    {
+                        "description": "Token da credencial da loja",
+                        "name": "X-STORE-CREDENTIAL",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -179,7 +257,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/dto.ResponseBoletetoDTO"
+                                    "$ref": "#/components/schemas/dto.ResponseCreditCardDTO"
                                 }
                             }
                         }
@@ -350,7 +428,7 @@
                 }
             }
         },
-        "/checkout/v1/{transactionOriginId}": {
+        "/checkout/v1/pix/{transactionOriginId}": {
             "get": {
                 "security": [
                     {
@@ -710,7 +788,8 @@
                     },
                     "cardHash": {
                         "description": "Hash do cartão de crédito (criptografado no frontend)",
-                        "type": "string"
+                        "type": "string",
+                        "example": "b4b153fb-fb46-4006-beaf-090984ea8f53"
                     },
                     "customer": {
                         "description": "Informações do cliente responsável pelo pagamento",
@@ -720,8 +799,12 @@
                             }
                         ]
                     },
+                    "description": {
+                        "description": "Descrição da transação (opcional)",
+                        "type": "string"
+                    },
                     "expiratedAt": {
-                        "description": "Data do pagamento no formato YYYY-MM-DD",
+                        "description": "Data de expiração do pagamento no formato YYYY-MM-DD",
                         "type": "string",
                         "example": "2025-03-02"
                     },
@@ -732,19 +815,27 @@
                             "$ref": "#/components/schemas/dto.OrderItemDTO"
                         }
                     },
+                    "postbackUrl": {
+                        "description": "Url para envio de webhook com o resultado da transação",
+                        "type": "string"
+                    },
                     "qtdInstallments": {
                         "description": "Quantidade de parcelas para o pagamento",
                         "type": "integer",
                         "example": 1
                     },
-                    "storeCredentialToken": {
-                        "description": "Token de credencial da loja fornecido para autenticação",
-                        "type": "string"
+                    "shippingAddress": {
+                        "description": "Endereço de entrega associado à transação (opcional)",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateShippingAddressDTO"
+                            }
+                        ]
                     },
                     "value": {
                         "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
                         "type": "integer",
-                        "example": 25000
+                        "example": 500
                     }
                 }
             },
@@ -1131,6 +1222,77 @@
                     }
                 }
             },
+            "dto.ResponseCheckoutCreditCardDTO": {
+                "type": "object",
+                "properties": {
+                    "billingAddress": {
+                        "description": "Endereço de cobrança associado ao cliente",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
+                            }
+                        ]
+                    },
+                    "bin": {
+                        "description": "Numero do cartão",
+                        "type": "string"
+                    },
+                    "brand": {
+                        "description": "Bandeira do cartão",
+                        "type": "string"
+                    },
+                    "customer": {
+                        "description": "Informações do cliente que realizará o pagamento",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.Customer"
+                            }
+                        ]
+                    },
+                    "id": {
+                        "description": "ID interno da transação no sistema\nexample: 1",
+                        "type": "integer"
+                    },
+                    "orderItems": {
+                        "description": "Lista de itens relacionados ao pedido (opcional)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dto.OrderItemDTO"
+                        }
+                    },
+                    "shippingAddress": {
+                        "description": "Endereço de entrega associado à transação (opcional)",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.CreateShippingAddressDTO"
+                            }
+                        ]
+                    },
+                    "status": {
+                        "description": "Status da transação\ntipos de status: PAID, FAILED, REFUNDED, CHARGEBACK. EXPIRED, UNAUTHORIZED E PENDING",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entities.TransactionStatus"
+                            }
+                        ],
+                        "example": "PENDING"
+                    },
+                    "statusDate": {
+                        "description": "Data e hora da última atualização de status no formato ISO 8601",
+                        "type": "string",
+                        "example": "2025-03-02T14:25:00Z"
+                    },
+                    "transactionId": {
+                        "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
+                        "type": "integer"
+                    },
+                    "value": {
+                        "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
+                        "type": "integer",
+                        "example": 500
+                    }
+                }
+            },
             "dto.ResponseCheckoutPixDTO": {
                 "type": "object",
                 "properties": {
@@ -1204,10 +1366,13 @@
             "dto.ResponseCreditCardDTO": {
                 "type": "object",
                 "properties": {
-                    "authorizationCode": {
-                        "description": "Código de autorização fornecido pela operadora de cartão",
-                        "type": "string",
-                        "example": "123456789012"
+                    "bin": {
+                        "description": "Numero do cartão",
+                        "type": "string"
+                    },
+                    "brand": {
+                        "description": "Bandeira do cartão",
+                        "type": "string"
                     },
                     "id": {
                         "description": "ID interno opcional gerado pela plataforma",
@@ -1220,19 +1385,14 @@
                         "example": "Limite de crédito excedido"
                     },
                     "status": {
-                        "description": "Para Cartão de Crédito:\n- notSend: Ainda não enviada para operadora de Cartão\n- authorized: Autorizado\n- captured: Capturada na Operadora de Cartão\n- denied: Negada na Operadora de Cartão\n- reversed: Estornada na Operadora de Cartão\n- chargeback: Estorno por chargeback\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
+                        "description": "status da transação com cartão de crédito",
                         "type": "string",
-                        "example": "authorized"
+                        "example": "PAID"
                     },
                     "statusDate": {
                         "description": "Data e hora da última atualização de status no formato ISO 8601",
                         "type": "string",
                         "example": "2025-03-02T14:25:00Z"
-                    },
-                    "statusDescription": {
-                        "description": "Descrição do status da transação, fornecida pela operadora",
-                        "type": "string",
-                        "example": "Pagamento autorizado pela operadora de cartão"
                     },
                     "transactionOriginId": {
                         "description": "ID da transação gerada",

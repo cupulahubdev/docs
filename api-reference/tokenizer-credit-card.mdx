@@ -1,0 +1,60 @@
+---
+
+title: "Tokenização de Cartão de Crédito"
+description: ""
+---------------
+
+## Tokenização de Cartão de Crédito
+
+Utilize este script para tokenizar os dados do cartão de crédito com segurança, antes de enviá-los para seu backend ou para a API da Fyntra.
+
+> ⚠️ **Importante:** A cada nova requisição, um novo token deve ser gerado com os dados atualizados do cartão de crédito. Tokens não devem ser reutilizados.
+
+### 📦 Inclusão do Script
+
+Inclua o script abaixo no seu HTML:
+
+```html
+<script src="https://cdn.cupulahub.com.br/sdk/latest/tokenize.js"></script>
+```
+
+### 🧠 Como usar
+
+Após carregar o script, utilize a função `tokenizeCard` da seguinte forma:
+
+```html
+<script>
+  async function handleTokenize() {
+    const cardData = {
+      number: "4111111111111111",
+      holderName: "João Silva",
+      expMonth: 1,
+      expYear: 2026,
+      cvv: "123"
+    };
+
+    const integrationToken = "tok_abc123";
+
+    try {
+      const token = await tokenizeCard(cardData, integrationToken);
+      console.log("Token do cartão:", token);
+    } catch (err) {
+      console.error("Erro ao tokenizar o cartão:", err);
+    }
+  }
+</script>
+```
+
+#### ✅ Exemplo de retorno
+
+```json
+{
+  "token_id": "b5250c82-f4e7-4bfe-9daa-a918d2810cfd"
+}
+```
+
+Você pode chamar `handleTokenize()` após o usuário preencher os dados e clicar em um botão, por exemplo.
+
+---
+
+Se estiver utilizando frameworks (React, Vue, etc.), carregue o script no `index.html` e chame a função normalmente no seu código JavaScript.

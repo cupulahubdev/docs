@@ -32,7 +32,8 @@
           {
             "group": "API Documentation",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/introduction",
+              "api-reference/tokenizer-credit-card"
             ]
           },
           {
@@ -45,7 +46,9 @@
             "group": "Checkout endpoints",
             "pages": [
               "api-reference/checkout/create-payment-pix",
-              "api-reference/checkout/get-transaction-pix"
+              "api-reference/checkout/create-payment-credit",
+              "api-reference/checkout/get-transaction-pix",
+              "api-reference/checkout/get-transaction-credit"
             ]
           }
         ]
