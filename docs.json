@@ -20,6 +20,7 @@
               "auth",
               "reference-sandbox",
               "webhook",
+              "tokenizer-credit-card",
               "store-collect-data",
               "erros-common"
             ]
@@ -32,8 +33,7 @@
           {
             "group": "API Documentation",
             "pages": [
-              "api-reference/introduction",
-              "api-reference/tokenizer-credit-card"
+              "api-reference/introduction"
             ]
           },
           {

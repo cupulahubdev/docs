@@ -787,7 +787,7 @@
                         ]
                     },
                     "cardHash": {
-                        "description": "Hash do cartão de crédito (criptografado no frontend)",
+                        "description": "Hash do cartão de crédito (criptografado no frontend) Ex: b4b153fb-fb46-4006-beaf-090984ea8f53",
                         "type": "string",
                         "example": "b4b153fb-fb46-4006-beaf-090984ea8f53"
                     },
