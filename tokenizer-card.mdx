@@ -5,7 +5,7 @@ icon: 'credit-card'
 
 ## Tokenização de Cartão de Crédito
 
-Utilize este script para tokenizar os dados do cartão de crédito com segurança, antes de enviá-los para seu backend ou para a API da Fyntra.
+Utilize este script para tokenizar os dados do cartão de crédito com segurança. Este token deve ser informado no campo `cardHash` ao criar a transação com cartão de crédito.
 
 > ⚠️ **Importante:** A cada nova requisição, um novo token deve ser gerado com os dados atualizados do cartão de crédito. Tokens não devem ser reutilizados.
 
@@ -48,7 +48,7 @@ Após carregar o script, utilize a função `tokenizeCard` da seguinte forma:
 
 ```json
 {
-  "token_id": "b5250c82-f4e7-4bfe-9daa-a918d2810cfd"
+  "cardHash": "b5250c82-f4e7-4bfe-9daa-a918d2810cfd"
 }
 ```
 

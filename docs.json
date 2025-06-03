@@ -22,7 +22,8 @@
               "webhook",
               "store-collect-data",
               "erros-common",
-              "tokenizer-card"
+              "tokenizer-card",
+              "integration-token"
             ]
           }
         ]
