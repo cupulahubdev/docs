@@ -787,7 +787,7 @@
                         ]
                     },
                     "cardHash": {
-                        "description": "Hash do cartão de crédito (criptografado no frontend) Ex: b4b153fb-fb46-4006-beaf-090984ea8f53",
+                        "description": "Hash do cartão de crédito (criptografado no frontend)",
                         "type": "string",
                         "example": "b4b153fb-fb46-4006-beaf-090984ea8f53"
                     },
@@ -1282,9 +1282,9 @@
                         "type": "string",
                         "example": "2025-03-02T14:25:00Z"
                     },
-                    "transactionId": {
+                    "transactionOriginId": {
                         "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
-                        "type": "integer"
+                        "type": "string"
                     },
                     "value": {
                         "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
@@ -1352,9 +1352,9 @@
                         ],
                         "example": "PENDING"
                     },
-                    "transactionId": {
+                    "transactionOriginId": {
                         "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
-                        "type": "integer"
+                        "type": "string"
                     },
                     "value": {
                         "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
