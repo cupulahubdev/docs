@@ -49,7 +49,9 @@
               "api-reference/checkout/create-payment-pix",
               "api-reference/checkout/create-payment-credit",
               "api-reference/checkout/get-transaction-pix",
-              "api-reference/checkout/get-transaction-credit"
+              "api-reference/checkout/get-transaction-credit",
+              "api-reference/checkout/get-storedata"
+
             ]
           }
         ]

@@ -495,6 +495,73 @@
                 }
             }
         },
+        "/checkout/v1/store": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna os dados da loja e do vendedor associados ao token de integração fornecido no header.",
+                "tags": [
+                    "Store"
+                ],
+                "summary": "Obtém dados da loja pelo token de integração",
+                "parameters": [
+                    {
+                        "description": "Token da credencial da loja. Utilize este para testar: 2028c7b89ccb7fc79afa540bda12772f",
+                        "name": "X-STORE-CREDENTIAL",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dados da loja e do vendedor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.GetStoreDataByIntegrationTokenResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida - Header ausente ou inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado - Token inválido ou expirado.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/order/v1/create": {
             "post": {
                 "description": "This endpoint allows the creation of a new order.",
@@ -1061,6 +1128,17 @@
                     }
                 }
             },
+            "dto.GetStoreDataByIntegrationTokenResponseDto": {
+                "type": "object",
+                "properties": {
+                    "seller": {
+                        "$ref": "#/components/schemas/dto.SellerInfo"
+                    },
+                    "store": {
+                        "$ref": "#/components/schemas/dto.StoreInfo"
+                    }
+                }
+            },
             "dto.IResponseInstallmentOption": {
                 "type": "object",
                 "properties": {
@@ -1455,6 +1533,41 @@
                         "description": "ID da transação gerada",
                         "type": "string",
                         "example": "8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b"
+                    }
+                }
+            },
+            "dto.SellerInfo": {
+                "type": "object",
+                "properties": {
+                    "document": {
+                        "description": "Documento do vendedor (CPF)\nexample: 123.456.789-10",
+                        "type": "string",
+                        "example": "123.456.789-10"
+                    },
+                    "email": {
+                        "description": "Email do vendedor\nexample: joao.silva@email.com",
+                        "type": "string",
+                        "example": "joao.silva@email.com"
+                    },
+                    "name": {
+                        "description": "Nome do vendedor\nexample: João da Silva",
+                        "type": "string",
+                        "example": "João da Silva"
+                    }
+                }
+            },
+            "dto.StoreInfo": {
+                "type": "object",
+                "properties": {
+                    "cnpj": {
+                        "description": "CNPJ da loja\nexample: 12.345.678/0001-99",
+                        "type": "string",
+                        "example": "12.345.678/0001-99"
+                    },
+                    "socialReason": {
+                        "description": "Razão social da loja\nexample: Loja Exemplo Ltda",
+                        "type": "string",
+                        "example": "Loja Exemplo Ltda"
                     }
                 }
             },
