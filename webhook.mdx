@@ -1,7 +1,7 @@
 ---
 title: Webhooks de Transação
 description: ""
-icon: 'webhook'
+icon: "webhook"
 ---
 
 ## Webhooks de Notificação de Transação
@@ -59,7 +59,7 @@ curl -X 'POST' \
   },
   "value": 500
 }'
-````
+```
 
 📌 O `postbackUrl` é obrigatório para que possamos saber qual a URL deve receber os webhooks de status da transação.
 
@@ -71,5 +71,7 @@ O corpo da requisição enviada ao seu endpoint será no formato JSON:
 {
   "transactionOriginId": "a1b2c3d4-e5f6-7890-ab12-cd34ef567890",
   "status": "PAID",
-  "created_at": "2025-05-07T14:32:10Z"
+  "created_at": "2025-05-07T14:32:10Z",
+  "paymentMethod": "CREDIT"
 }
+```
