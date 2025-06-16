@@ -867,7 +867,7 @@
                         ]
                     },
                     "description": {
-                        "description": "Descrição da transação (opcional)",
+                        "description": "Descrição da transação",
                         "type": "string"
                     },
                     "expiratedAt": {
