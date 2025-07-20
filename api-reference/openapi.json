@@ -1284,7 +1284,7 @@
                         "example": "https://pagamentos.exemplo.com/boleto/8a3f7c1b-84e2-4f6e-bf01-91f5e7ad2f1b.pdf"
                     },
                     "status": {
-                        "description": "Status atual da transação\n- pendingBoleto: Boleto em aberto\n- payedBoleto: Boleto compensado\n- notCompensated: Boleto baixado por decurso de prazo\n- lessValueBoleto: Pago valor menor que o original\n- moreValueBoleto: Pago valor maior que o original\n- paidDuplicityBoleto: Pago em duplicidade\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
+                        "description": "Status atual da transação",
                         "type": "string",
                         "example": "pendingBoleto"
                     },
@@ -1516,7 +1516,7 @@
                         "example": "pedido-123"
                     },
                     "status": {
-                        "description": "Status atual da transação\n- pendingPix: Pix em aberto\n- payedPix: Pix pago\n- unavailablePix: Pix indisponível para pagamento\n- cancel: Cancelada manualmente\n- payExternal: Paga fora do sistema\n- cancelByContract: Cancelada ao cancelar a cobrança\n- free: Isento",
+                        "description": "Status atual da transação",
                         "allOf": [
                             {
                                 "$ref": "#/components/schemas/entities.TransactionStatus"

@@ -23,7 +23,8 @@
               "store-collect-data",
               "erros-common",
               "tokenizer-card",
-              "integration-token"
+              "integration-token",
+              "transaction-status"
             ]
           }
         ]

@@ -1,0 +1,25 @@
+---
+title: Status da Transação
+description: "Tabela com os possíveis status de uma transação"
+icon: "info"
+---
+
+A tabela abaixo resume todos os status possíveis de uma transação e seus significados:
+
+| Status               | Descrição                                                                 |
+|----------------------|---------------------------------------------------------------------------|
+| `IN_ANALYSIS`        | A transação está em análise por um sistema antifraude.                    |
+| `PENDING`            | A transação foi criada e está aguardando confirmação ou autorização.      |
+| `PAID`               | A transação foi concluída com sucesso e o pagamento confirmado.           |
+| `FAILED`             | A tentativa de transação falhou (ex: cartão recusado, erro de rede).      |
+| `REFUNDED`           | O valor da transação foi devolvido ao cliente.                            |
+| `CHARGEBACK`         | A transação foi revertida pelo banco do cliente após uma disputa.         |
+| `EXPIRED`            | A transação expirou por inatividade ou tempo limite excedido.             |
+| `REFUSED`            | A transação foi recusada pelo banco ou processadora.                      |
+| `CANCELED`           | A transação foi cancelada antes de ser concluída.                         |
+| `ERROR`              | Ocorreu um erro técnico ao processar a transação.                         |
+| `IN_DISPUTE`         | A transação está em disputa e pode resultar em chargeback.                |
+
+---
+
+Esses status permitem rastrear o ciclo de vida de uma transação e tomar ações apropriadas no sistema.
