@@ -1286,7 +1286,7 @@
                     "status": {
                         "description": "Status atual da transação",
                         "type": "string",
-                        "example": "pendingBoleto"
+                        "example": ""
                     },
                     "statusDate": {
                         "description": "Data e hora da última atualização de status",
