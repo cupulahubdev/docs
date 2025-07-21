@@ -24,7 +24,8 @@
               "erros-common",
               "tokenizer-card",
               "integration-token",
-              "transaction-status"
+              "transaction-status",
+              "changelog"
             ]
           }
         ]

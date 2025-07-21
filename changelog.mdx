@@ -1,0 +1,35 @@
+---
+title: Changelog V1.1
+description: Atualização no endpoint de cartão de crédito
+date: 2025-07-21
+---
+
+## Versão 1.1 - Novos campos no checkout
+Adicionamos suporte ao envio de informações contextuais do navegador através do novo objeto `browser` ao endpoint `/checkout/v1/creditCard`.
+
+🔗 **Documentação completa do endpoint:**  
+[POST /checkout/v1/creditCard](https://cupula.mintlify.app/api-reference/checkout/create-payment-credit#body-browser)
+
+### 🆕 Novo campo: `browser`
+
+O campo `browser` agora pode ser incluído no corpo da requisição com a seguinte estrutura:
+
+```json
+"browser": {
+  "cookiesAccepted": true,
+  "email": "user@gmail.com",
+  "hostName": "loja.exemplo.com",
+  "ipAddress": "45.176.181.12",
+  "type": "Chrome"
+}
+```
+
+### Descrição dos campos
+
+| Campo             | Tipo    | Obrigatório | Descrição                                          |
+| ----------------- | ------- | ----------- | -------------------------------------------------- |
+| `cookiesAccepted` | boolean | Sim         | Informa se o usuário aceitou cookies no navegador. |
+| `email`           | string  | Não         | Email do usuário no momento do checkout.           |
+| `hostName`        | string  | Não         | Hostname/domínio da loja no momento da compra.     |
+| `ipAddress`       | string  | Sim         | Endereço IP do cliente.                            |
+| `type`            | string  | Sim         | Nome do navegador (ex: Chrome, Firefox, Safari).   |

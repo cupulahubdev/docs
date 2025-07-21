@@ -93,63 +93,6 @@
                 }
             }
         },
-        "/checkout/v1/boleto": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Este endpoint permite a criação de um novo pagamento via Boleto.",
-                "tags": [
-                    "Checkout"
-                ],
-                "summary": "Criar um novo pagamento via Boleto",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/dto.CreateBoletoDTO"
-                            }
-                        }
-                    },
-                    "description": "Dados do pagamento, incluindo informações do cliente e do valor",
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "description": "Retorna os detalhes do boleto criado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.ResponseBoletetoDTO"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Requisição inválida - Corpo da requisição inválido.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Não autorizado - Token ausente ou inválido.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/checkout/v1/credit/{transactionOriginId}": {
             "get": {
                 "security": [
@@ -374,7 +317,7 @@
                 "summary": "Criar um novo pagamento via PIX",
                 "parameters": [
                     {
-                        "description": "Token da credencial da loja. Utilize este para testar: 2028c7b89ccb7fc79afa540bda12772f",
+                        "description": "Token da credencial da loja",
                         "name": "X-STORE-CREDENTIAL",
                         "in": "header",
                         "required": true,
@@ -551,6 +494,206 @@
                     },
                     "500": {
                         "description": "Erro interno do servidor.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/creditCardOps/v1/creditCardCheckout": {
+            "post": {
+                "description": "Este endpoint permite salvar múltiplos registros de cartão de crédito durante o processo de checkout.",
+                "tags": [
+                    "Checkout"
+                ],
+                "summary": "Salvar dados de checkout com cartão de crédito",
+                "parameters": [
+                    {
+                        "description": "Token da credencial da loja",
+                        "name": "X-STORE-CREDENTIAL",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CreateCreditCardCheckoutRequest"
+                            }
+                        }
+                    },
+                    "description": "Dados do checkout com múltiplos cartões de crédito",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Checkout salvo com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida - Corpo da requisição inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado - Token ausente ou inválido.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao salvar checkout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/creditCardOps/v1/decrypt": {
+            "post": {
+                "description": "Recebe um hash encriptado e retorna os dados do cartão de forma estruturada",
+                "tags": [
+                    "[interno]Criptografia Cartão de Crédito"
+                ],
+                "summary": "Decrypt encrypted credit card hash",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.DecryptRequest"
+                            }
+                        }
+                    },
+                    "description": "Hash encriptado do cartão",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.CardData"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/creditCardOps/v1/encrypt": {
+            "post": {
+                "description": "Recebe dados do cartão de crédito e retorna um hash encriptado",
+                "tags": [
+                    "[interno]Criptografia Cartão de Crédito"
+                ],
+                "summary": "Encrypt credit card",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CardData"
+                            }
+                        }
+                    },
+                    "description": "Dados do cartão de crédito",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method Not Allowed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/http_response.ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -763,7 +906,7 @@
     },
     "servers": [
         {
-            "url": "https://checkout.sandbox.cupulahub.app"
+            "url": "https://payments.service-dev.cupulahub.app"
         }
     ],
     "components": {
@@ -781,12 +924,12 @@
                     "clientId": {
                         "description": "Identificador do cliente fornecido pela plataforma",
                         "type": "string",
-                        "example": "2599392737807255302337010"
+                        "example": "2529699435881029074092451"
                     },
                     "clientSecret": {
                         "description": "Chave secreta associada ao clientId, usada para autenticação",
                         "type": "string",
-                        "example": "hbonLVy(UkugLyrYB&KL^rNPHvcnN*hJ"
+                        "example": "FkUXoAXkCYLXZwQtKOmsCQmgxHEIOTme"
                     }
                 }
             },
@@ -796,49 +939,85 @@
                     "token": {
                         "description": "Token codificado em base64, utilizado para autenticação em chamadas subsequentes à API.\nDeve ser incluído no cabeçalho Authorization como: Bearer {token}",
                         "type": "string",
-                        "example": "MjU5OTM5MjczNzgwNzI1NTMwMjMzNzAxMDpoYm9uTFZ5KFVrdWdMeXJZQiZLTF5yTlBIdmNuTipoSg=="
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=="
                     }
                 }
             },
-            "dto.CreateBoletoDTO": {
+            "dto.BrowserInfoDTO": {
                 "type": "object",
                 "properties": {
-                    "billingAddress": {
-                        "description": "Endereço de cobrança associado ao cliente",
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
-                            }
-                        ]
+                    "cookiesAccepted": {
+                        "description": "Identifica se o navegador aceita cookies",
+                        "type": "boolean",
+                        "example": true
                     },
-                    "customer": {
-                        "description": "Informações do cliente que realizará o pagamento",
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/dto.Customer"
-                            }
-                        ]
-                    },
-                    "expiratedAt": {
-                        "description": "Data do vencimento do boleto no formato YYYY-MM-DD",
+                    "email": {
+                        "description": "E-mail registrado no navegador (opcional)",
                         "type": "string",
-                        "example": "2025-03-02"
+                        "example": "user@gmail.com"
                     },
-                    "orderItems": {
-                        "description": "Lista de itens relacionados ao pedido (opcional)",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/dto.OrderItemDTO"
-                        }
+                    "hostName": {
+                        "description": "Nome do host informado pelo browser (opcional)",
+                        "type": "string",
+                        "example": "loja.exemplo.com"
                     },
-                    "storeCredentialToken": {
-                        "description": "Token de credencial da loja utilizado para autenticação da requisição",
+                    "ipAddress": {
+                        "description": "Endereço IP do comprador (IPv4 ou IPv6)",
+                        "type": "string",
+                        "example": "45.176.181.12"
+                    },
+                    "type": {
+                        "description": "Nome do navegador utilizado",
+                        "type": "string",
+                        "example": "Chrome"
+                    }
+                }
+            },
+            "dto.CardData": {
+                "type": "object",
+                "properties": {
+                    "cvv": {
                         "type": "string"
                     },
-                    "value": {
-                        "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
-                        "type": "integer",
-                        "example": 500
+                    "expMonth": {
+                        "type": "integer"
+                    },
+                    "expYear": {
+                        "type": "integer"
+                    },
+                    "holderName": {
+                        "type": "string"
+                    },
+                    "number": {
+                        "type": "string"
+                    }
+                }
+            },
+            "dto.CreateCreditCardCheckout": {
+                "type": "object",
+                "properties": {
+                    "acquirerIdentification": {
+                        "type": "string"
+                    },
+                    "creditCardToken": {
+                        "type": "string"
+                    },
+                    "fingerprintId": {
+                        "type": "string"
+                    },
+                    "identificationHash": {
+                        "type": "string"
+                    }
+                }
+            },
+            "dto.CreateCreditCardCheckoutRequest": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/dto.CreateCreditCardCheckout"
+                        }
                     }
                 }
             },
@@ -850,6 +1029,14 @@
                         "allOf": [
                             {
                                 "$ref": "#/components/schemas/dto.CreateCustomerAddressDTO"
+                            }
+                        ]
+                    },
+                    "browser": {
+                        "description": "Informações sobre o navegador do comprador",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/dto.BrowserInfoDTO"
                             }
                         ]
                     },
@@ -867,7 +1054,7 @@
                         ]
                     },
                     "description": {
-                        "description": "Descrição da transação",
+                        "description": "Descrição da transação (opcional)",
                         "type": "string"
                     },
                     "expiratedAt": {
@@ -1128,6 +1315,14 @@
                     }
                 }
             },
+            "dto.DecryptRequest": {
+                "type": "object",
+                "properties": {
+                    "encrypted": {
+                        "type": "string"
+                    }
+                }
+            },
             "dto.GetStoreDataByIntegrationTokenResponseDto": {
                 "type": "object",
                 "properties": {
@@ -1226,7 +1421,7 @@
                     },
                     "productPrice": {
                         "type": "integer",
-                        "example": 500
+                        "example": 25000
                     },
                     "productQuantity": {
                         "type": "integer",
@@ -1273,6 +1468,10 @@
                         "type": "string",
                         "example": "3419178905234567890123456789012345678001000000001"
                     },
+                    "description": {
+                        "description": "Descrição da transação",
+                        "type": "string"
+                    },
                     "id": {
                         "description": "ID interno opcional gerado pela plataforma",
                         "type": "integer",
@@ -1286,7 +1485,7 @@
                     "status": {
                         "description": "Status atual da transação",
                         "type": "string",
-                        "example": ""
+                        "example": "pendingBoleto"
                     },
                     "statusDate": {
                         "description": "Data e hora da última atualização de status",
@@ -1431,11 +1630,11 @@
                         "example": "PENDING"
                     },
                     "transactionOriginId": {
-                        "description": "ID único da transação (gerado pelo sistema)\nexample: 348923",
+                        "description": "ID único da transação (gerado pelo sistema)\nexample: 348",
                         "type": "string"
                     },
                     "value": {
-                        "description": "Valor total da transação em centavos (ex: 500 = R$5,00)",
+                        "description": "Valor total da transação em centavos (ex: 25000 = R$250,00)",
                         "type": "integer",
                         "example": 500
                     }
@@ -1464,7 +1663,11 @@
                     },
                     "status": {
                         "description": "status da transação com cartão de crédito",
-                        "type": "string",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entities.TransactionStatus"
+                            }
+                        ],
                         "example": "PAID"
                     },
                     "statusDate": {
@@ -1490,6 +1693,10 @@
             "dto.ResponsePixDTO": {
                 "type": "object",
                 "properties": {
+                    "description": {
+                        "description": "Descrição da transação",
+                        "type": "string"
+                    },
                     "id": {
                         "description": "ID interno opcional gerado pela plataforma",
                         "type": "integer",
@@ -1606,22 +1813,30 @@
             "entities.TransactionStatus": {
                 "type": "string",
                 "enum": [
+                    "IN_DISPUTE",
+                    "IN_ANALYSIS",
                     "PENDING",
                     "PAID",
                     "FAILED",
                     "REFUNDED",
                     "CHARGEBACK",
                     "EXPIRED",
-                    "UNAUTHORIZED"
+                    "REFUSED",
+                    "CANCELED",
+                    "ERROR"
                 ],
                 "x-enum-varnames": [
+                    "TransactionStatusInDisput",
+                    "TransactionStatusInAnalysis",
                     "TransactionStatusPending",
                     "TransactionStatusPaid",
                     "TransactionStatusFailed",
                     "TransactionStatusRefunded",
                     "TransactionStatusChargeback",
                     "TransactionStatusExpired",
-                    "TransactionStatusUnauthorized"
+                    "TransactionStatusRefused",
+                    "TransactionStatusCanceled",
+                    "TransactionStatusError"
                 ]
             },
             "http_response.ErrorResponse": {
@@ -1640,6 +1855,24 @@
                         "type": "string"
                     },
                     "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "http_response.SuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {},
+                    "error": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "timestamp": {
                         "type": "string"
                     }
                 }
