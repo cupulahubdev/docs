@@ -1174,6 +1174,9 @@
                     },
                     "store": {
                         "$ref": "#/components/schemas/dto.StoreInfo"
+                    },
+                    "tax": {
+                        "$ref": "#/components/schemas/dto.Tax"
                     }
                 }
             },
@@ -1610,6 +1613,47 @@
                         "description": "Razão social da loja\nexample: Loja Exemplo Ltda",
                         "type": "string",
                         "example": "Loja Exemplo Ltda"
+                    }
+                }
+            },
+            "dto.Tax": {
+                "type": "object",
+                "properties": {
+                    "creditX1": {
+                        "type": "number"
+                    },
+                    "creditX10": {
+                        "type": "number"
+                    },
+                    "creditX11": {
+                        "type": "number"
+                    },
+                    "creditX12": {
+                        "type": "number"
+                    },
+                    "creditX2": {
+                        "type": "number"
+                    },
+                    "creditX3": {
+                        "type": "number"
+                    },
+                    "creditX4": {
+                        "type": "number"
+                    },
+                    "creditX5": {
+                        "type": "number"
+                    },
+                    "creditX6": {
+                        "type": "number"
+                    },
+                    "creditX7": {
+                        "type": "number"
+                    },
+                    "creditX8": {
+                        "type": "number"
+                    },
+                    "creditX9": {
+                        "type": "number"
                     }
                 }
             },
