@@ -854,6 +854,10 @@
                         "type": "string",
                         "example": "2025-03-02"
                     },
+                    "metadata": {
+                        "description": "Campo metadata (opcional)",
+                        "type": "string"
+                    },
                     "orderItems": {
                         "description": "Lista de itens relacionados ao pedido (opcional)",
                         "type": "array",
@@ -912,6 +916,10 @@
                         "description": "Data de expiração do pagamento no formato YYYY-MM-DD",
                         "type": "string",
                         "example": "2025-03-02"
+                    },
+                    "metadata": {
+                        "description": "Campo metadata (opcional)",
+                        "type": "string"
                     },
                     "orderItems": {
                         "description": "Lista de itens incluídos no pedido",
@@ -1062,6 +1070,10 @@
                                 "$ref": "#/components/schemas/dto.Customer"
                             }
                         ]
+                    },
+                    "metadata": {
+                        "description": "Campo metadata (opcional)",
+                        "type": "string"
                     },
                     "orderItems": {
                         "description": "Lista de itens relacionados ao pedido",
